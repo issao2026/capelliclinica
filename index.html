@@ -77,6 +77,12 @@ tr.clk{cursor:pointer}tr.clk:hover{background:#faf8f3}
 .bodyimg{position:relative;width:100%;max-width:760px;margin:0 auto;min-height:120px}
 .bodyimg img{width:100%;display:block;border-radius:12px}
 #bodyfb,.imgfb{display:none;color:#86827b;font-size:13px;padding:18px;border:1px dashed var(--line);border-radius:11px;text-align:center}
+.hot2{position:absolute;width:16px;height:16px;border-radius:50%;transform:translate(-50%,-50%);cursor:pointer;z-index:3;background:rgba(192,57,43,.55);border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:.15s}
+.hot2:hover{background:rgba(192,57,43,.9)}
+.hot2.on{background:#c0392b;animation:pulseDot 1.3s infinite}
+@keyframes pulseDot{0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,.5)}50%{box-shadow:0 0 0 14px rgba(192,57,43,0)}}
+.infoblock{margin-top:12px}.infoblock b{color:var(--ink)}
+.infotag{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);background:var(--green-soft);padding:3px 8px;border-radius:6px;margin-bottom:5px}
 .bodywrap{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
 @media(max-width:820px){.bodywrap{grid-template-columns:1fr}}
 .microlbl{font-size:11.5px;color:var(--muted);font-weight:700;margin:0 0 8px;text-transform:uppercase;letter-spacing:.4px}
@@ -178,11 +184,14 @@ tr.clk{cursor:pointer}tr.clk:hover{background:#faf8f3}
 
     <section class="card">
       <h2>Mapa corporal · de onde vem cada índice</h2>
-      <div class="bodyimg" id="stage">
-        <img id="bodyimgEl" src="mapa-corporal.png" alt="Mapa corporal" data-srcs="mapa-corporal.png,mapa-corporal.jpg,corpo.png,corpo.jpg" data-i="0" data-fb="bodyfb" onerror="nextSrc(this)">
-        <div id="bodyfb">Salve a imagem do corpo como <b>mapa-corporal.png</b> na mesma pasta.</div>
+      <div class="bodywrap" style="grid-template-columns:1.15fr .85fr">
+        <div class="bodyimg" id="stage">
+          <img id="bodyimgEl" src="mapa-corporal.png" alt="Mapa corporal" data-srcs="mapa-corporal.png,mapa-corporal.jpg,corpo.png,corpo.jpg" data-i="0" data-fb="bodyfb" onerror="nextSrc(this)">
+          <div id="bodyfb">Salve a imagem do corpo como <b>mapa-corporal.png</b> na mesma pasta.</div>
+        </div>
+        <div class="organpanel" id="bodyInfo"><h3>Clique num ponto do corpo</h3><div class="sub">Entenda o papel de cada índice no organismo — isolado e em conjunto.</div></div>
       </div>
-      <p class="disclaimer" style="margin-top:12px">As faixas se ajustam ao <b>sexo</b> do paciente. Idade e peso entram na leitura clínica do médico.</p>
+      <p class="disclaimer" style="margin-top:12px">Clique nos pontos vermelhos. As faixas se ajustam ao <b>sexo</b>; idade e peso entram na leitura clínica.</p>
     </section>
 
     <div class="grid2">
@@ -390,7 +399,7 @@ function abrirPaciente(i){
   document.getElementById('curvaSel').innerHTML=DADOS.map(d=>`<option>${d.n}</option>`).join("");
   const pri=DADOS.filter(d=>classify(d).k!=='ok').sort((a,b)=>pctOtimo(a)-pctOtimo(b))[0];
   selMarcador((pri||DADOS[0]).n,true);
-  renderPrioridades();
+  renderPrioridades();renderBodyMap();
 }
 function setNome(){if(!curPac)return;document.getElementById('pName').textContent=masked?("Paciente #"+curPac.cpf.slice(-5)+" · "+(curPac.sexo==='F'?'F':'M')):(curPac.nome+" · "+(curPac.sexo==='F'?'F':'M'));document.getElementById('pAv').textContent=masked?"##":curPac.nome.split(' ').map(s=>s[0]).slice(0,2).join('');}
 function toggleMask(){masked=!masked;setNome();document.getElementById('maskBtn').textContent=masked?"🔓 Mostrar identificação":"🔒 Ocultar identificação";}
@@ -426,12 +435,48 @@ function renderPrioridades(){
     const pad=(d.oh-d.ol)*0.8||1,mn=d.ol-pad,mx=d.oh+pad,span=mx-mn;
     const gl=(d.ol-mn)/span*100,gr=(d.oh-mn)/span*100,mk=Math.max(2,Math.min(98,(d.v-mn)/span*100));
     const dotc=classify(d).k==='red'?'#c0392b':'#b9770e';
-    return `<div class="prow"><span class="pnm">${d.n}</span><span class="pvl">${d.v}<small style="font-weight:500;color:var(--muted)"> ${d.u}</small></span><span class="pend">${d.ol}</span><div class="pbar"><div class="zred" style="left:0;width:${gl}%"></div><div class="zgrn" style="left:${gl}%;width:${gr-gl}%"></div><div class="zyel" style="left:${gr}%;right:0"></div><div class="pdot" style="left:${mk}%;background:${dotc}"></div></div><span class="pend">${d.oh}</span></div>`;
+    return `<div class="prow" style="cursor:pointer" onclick="selMarcador('${d.n}')"><span class="pnm">${d.n}</span><span class="pvl">${d.v}<small style="font-weight:500;color:var(--muted)"> ${d.u}</small></span><span class="pend">${d.ol}</span><div class="pbar"><div class="zred" style="left:0;width:${gl}%"></div><div class="zgrn" style="left:${gl}%;width:${gr-gl}%"></div><div class="zyel" style="left:${gr}%;right:0"></div><div class="pdot" style="left:${mk}%;background:${dotc}"></div></div><span class="pend">${d.oh}</span></div>`;
   }).join("")+`<div class="plegend"><span><i style="background:#f3c5bf"></i>Abaixo</span><span><i style="background:#bfe3c8"></i>Faixa ótima</span><span><i style="background:#f3e3b0"></i>Acima</span></div>`;
+}
+const BODYPTS=[
+ {mk:"T4 livre",x:50,y:23},
+ {mk:"Vitamina D (25-OH)",x:46,y:32},
+ {mk:"Vitamina D (25-OH)",x:55,y:32},
+ {mk:"Vitamina B12",x:49,y:41},
+ {mk:"Ferritina",x:55,y:50},
+ {mk:"Testosterona livre",x:50,y:57}
+];
+const INFO={
+ "Ferritina":{iso:"Reserva de ferro do corpo. O ferro oxigena e sustenta o ciclo de crescimento do folículo — reserva baixa é o gatilho nº1 de eflúvio telógeno (queda difusa).",conj:"Confirme com <b>saturação de transferrina</b> e <b>hemoglobina</b>. Ferritina baixa + <b>TSH</b> alto agrava a queda. Inflamação eleva a ferritina falsamente — cruze com PCR."},
+ "Testosterona livre":{iso:"Fração ativa da testosterona: vitalidade, libido, massa muscular, disposição e força do fio.",conj:"Lê-se junto com <b>SHBG</b> (que a sequestra), <b>colesterol</b> (precursor hormonal) e <b>triglicerídeos/insulina</b> — dislipidemia e resistência insulínica derrubam a testo livre. Avalie com <b>tireoide</b> e <b>ferritina</b> no quadro de energia."},
+ "Vitamina D (25-OH)":{iso:"Regula imunidade e o ciclo do folículo; deficiência se associa a miniaturização e pior resposta ao tratamento.",conj:"Interage com <b>cálcio/PTH</b> e potencializa a ação de <b>ferro</b> e <b>zinco</b> na recuperação capilar."},
+ "Vitamina B12":{iso:"Essencial para a renovação celular do bulbo capilar e a produção de hemácias.",conj:"Avalie com <b>ácido fólico</b> e <b>ferro</b> — juntos sustentam a hematopoiese e a nutrição do folículo."},
+ "T4 livre":{iso:"Hormônio da tireoide que comanda o metabolismo e o ritmo do ciclo capilar.",conj:"Cruze com <b>TSH</b>. Tireoide lenta mantém a queda mesmo com nutrientes corrigidos e agrava o déficit de <b>ferritina</b>."}
+};
+function renderBodyMap(){
+  const stage=document.getElementById('stage');stage.querySelectorAll('.hot2').forEach(e=>e.remove());
+  BODYPTS.forEach((o,i)=>{const h=document.createElement('div');h.className='hot2';h.style.left=o.x+'%';h.style.top=o.y+'%';h.title=o.mk;h.onclick=()=>clickHotspot(o.mk,i);stage.appendChild(h);});
+}
+function clickHotspot(mk,i){
+  document.querySelectorAll('#stage .hot2').forEach((h,j)=>h.classList.toggle('on',j===i));
+  const d=DADOS.find(x=>x.n===mk),info=INFO[mk]||{iso:"",conj:""};
+  const c=d?classify(d):{k:'ok',t:''};
+  const vline=d?`<span class="chip ${c.k}" style="margin-left:6px">${d.v} ${d.u} · ${c.t}</span>`:'';
+  document.getElementById('bodyInfo').innerHTML=`<h3>${mk}${vline}</h3>
+   <div class="infoblock"><span class="infotag">Papel isolado</span><div>${info.iso}</div></div>
+   <div class="infoblock"><span class="infotag">Em conjunto</span><div>${info.conj}</div></div>
+   <div style="margin-top:12px"><span style="cursor:pointer;color:var(--blue);font-size:12.5px" onclick="selMarcador('${mk}')">Ver curva de distribuição →</span></div>`;
 }
 function gaugeSvg(pct){const r=22,c=2*Math.PI*r,off=c*(1-Math.max(0,Math.min(100,pct))/100);const col=pct>=70?'#1f8f5f':pct>=45?'#e0a93b':'#d24b3e';return `<svg viewBox="0 0 54 54" width="54" height="54"><circle cx="27" cy="27" r="${r}" fill="none" stroke="#ece9e3" stroke-width="6"/><circle cx="27" cy="27" r="${r}" fill="none" stroke="${col}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 27 27)"/><text x="27" y="31" text-anchor="middle" font-size="14" font-weight="800" fill="${col}">${pct}%</text></svg>`;}
 function miniCurve(d){const W=92,base=24,amp=18;const ol=d.ol,oh=d.oh,nl=d.nl,nh=d.nh,mn=ol-(oh-ol)*1.6,mx=oh+(oh-ol)*1.6,span=(mx-mn)||1;const X=v=>Math.max(0,Math.min(W,(v-mn)/span*W));const cx=X((ol+oh)/2),sig=Math.max(8,(X(oh)-X(ol))/2.2);const z=(a,b,c)=>`<rect x="${a}" y="2" width="${Math.max(0,b-a)}" height="${base-2}" fill="${c}"/>`;const zones=z(0,X(nl),'#fae6e2')+z(X(nl),X(ol),'#fbf1dd')+z(X(ol),X(oh),'#e7eefb')+z(X(oh),X(nh),'#fbf1dd')+z(X(nh),W,'#fae6e2');let p='';for(let x=0;x<=W;x+=6){const y=base-amp*Math.exp(-((x-cx)*(x-cx))/(2*sig*sig));p+=(x?'L':'M')+x+' '+y.toFixed(1)+' ';}const bell=`<path d="${p}L${W} ${base} L0 ${base} Z" fill="rgba(120,116,108,.16)" stroke="#bdb9b0" stroke-width="1"/>`;const k=classify(d).k,col=k==='ok'?'#2f6fed':k==='amber'?'#e0a93b':'#d24b3e',px=X(d.v);const mk=`<line x1="${px}" y1="3" x2="${px}" y2="${base}" stroke="${col}" stroke-width="2"/><circle cx="${px}" cy="4" r="3" fill="${col}"/>`;return `<svg viewBox="0 0 ${W} ${base+5}" width="92" height="29" style="display:block">${zones}${bell}${mk}</svg>`;}
-function curveSvg(d){const W=620,base=170,amp=120,H=base+34;const ol=d.ol,oh=d.oh,nl=d.nl,nh=d.nh,mn=ol-(oh-ol)*1.6,mx=oh+(oh-ol)*1.6,span=(mx-mn)||1;const X=v=>Math.max(0,Math.min(W,(v-mn)/span*W));const cx=X((ol+oh)/2),sig=Math.max(34,(X(oh)-X(ol))/2.2);const z=(a,b,c)=>`<rect x="${a}" y="12" width="${Math.max(0,b-a)}" height="${base-12}" fill="${c}"/>`;const zones=z(0,X(nl),'#f7d9d3')+z(X(nl),X(ol),'#f6e6c2')+z(X(ol),X(oh),'#d8e6fb')+z(X(oh),X(nh),'#f6e6c2')+z(X(nh),W,'#f7d9d3');let p='';for(let x=0;x<=W;x+=8){const y=base-amp*Math.exp(-((x-cx)*(x-cx))/(2*sig*sig));p+=(x?'L':'M')+x+' '+y.toFixed(1)+' ';}const bell=`<path d="${p}L${W} ${base} L0 ${base} Z" fill="rgba(120,116,108,.22)" stroke="#b3afa6" stroke-width="1.5"/>`;const c=classify(d),col=c.k==='ok'?'#2f6fed':c.k==='amber'?'#e0a93b':'#d24b3e',px=X(d.v);const mark=`<line x1="${px}" y1="16" x2="${px}" y2="${base}" stroke="${col}" stroke-width="3"/><circle cx="${px}" cy="16" r="6" fill="${col}"/>`;const tk=v=>`<line x1="${X(v)}" y1="${base}" x2="${X(v)}" y2="${base+5}" stroke="#bbb"/><text x="${X(v)}" y="${base+18}" font-size="10" fill="#86827b" text-anchor="middle">${v}</text>`;return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block">${zones}${bell}${tk(nl)}${tk(ol)}${tk(oh)}${tk(nh)}${mark}</svg>`;}
+function curveSvg(d){
+  function X(v){if(v<=d.nl)return Math.max(1,Math.min(25,(v/((d.nl)||1))*25));if(v<=d.ol)return 25+(v-d.nl)/((d.ol-d.nl)||1)*25;if(v<=d.oh)return 50+(v-d.ol)/((d.oh-d.ol)||1)*25;if(v<=d.nh)return 75+(v-d.oh)/((d.nh-d.oh)||1)*25;return 99;}
+  const mx=Math.max(2,Math.min(98,X(d.v)));
+  const k=classify(d).k,col=k==='ok'?'#2f6fed':k==='amber'?'#e0a93b':'#d24b3e';
+  const seg=(bg,tc,t)=>`<div style="flex:1;background:${bg};display:flex;justify-content:center;align-items:flex-start;padding-top:16px;font-size:11.5px;font-weight:800;letter-spacing:.4px;color:${tc};text-align:center">${t}</div>`;
+  const tick=(x,v)=>`<span style="position:absolute;left:${x}%;transform:translateX(-50%)">${v}</span>`;
+  return `<div style="position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line)"><div style="display:flex;height:140px">${seg('#fbeae8','#c0392b','BAIXO')}${seg('#fdf3e3','#b9770e','NORMAL / ATENÇÃO')}${seg('#eaf1fd','#2f6fed','ÓTIMO')}${seg('#fdf3e3','#b9770e','NORMAL / ATENÇÃO')}</div><div style="position:absolute;top:6px;left:${mx}%;transform:translateX(-50%);font-weight:800;color:${col};font-size:14px">${d.v}</div><div style="position:absolute;top:30px;bottom:14px;left:${mx}%;transform:translateX(-50%);width:15px;border-radius:8px;background:${col};box-shadow:0 1px 4px rgba(0,0,0,.25)"></div></div><div style="position:relative;height:18px;margin-top:5px;font-size:11px;color:var(--muted)">${tick(25,d.nl)}${tick(50,d.ol)}${tick(75,d.oh)}${tick(100,d.nh)}</div>`;
+}
 function selMarcador(n,noScroll){const s=document.getElementById('curvaSel');if(s)s.value=n;renderCurva(n);if(!noScroll){var el=document.getElementById('curva');if(el)el.scrollIntoView({behavior:'smooth',block:'center'});}}
 function renderCurva(name){const d=DADOS.find(x=>x.n===name)||DADOS[0];if(!d)return;document.getElementById('curva').innerHTML=curveSvg(d);const c=classify(d),col=c.k==='ok'?'#2f6fed':c.k==='amber'?'#e0a93b':'#d24b3e';const w=c.k==='ok'?'Ideal':c.k==='amber'?'Atenção':(d.v<d.nl?'Abaixo do ideal':'Acima do ideal');document.getElementById('curvaCap').innerHTML=`<span style="color:${col}">${d.n}: ${d.v} ${d.u} — ${w}</span>`;}
 async function analisarAoVivo(){const out=document.getElementById('liveOut');if(!curPac)return;const prompt=window.PROMPT_AGENTE+"\n\nPaciente: "+(curPac.sexo==='F'?'feminino':'masculino')+", "+curPac.idade+" anos, "+curPac.peso+" kg. "+curPac.ctx+"\n\nDADOS (JSON):\n"+JSON.stringify(DADOS);if(window.cowork&&window.cowork.askClaude){out.innerHTML='Analisando exames com Claude...';try{const r=await window.cowork.askClaude(prompt,[DADOS]);out.textContent=typeof r==="string"?r:(r.text||r.content||JSON.stringify(r));}catch(e){out.textContent="Não foi possível chamar o Claude aqui. ("+e+")";}}else{try{await navigator.clipboard.writeText(prompt);out.innerHTML="Fora do app Claude (sem IA ao vivo). <b>Prompt + dados copiados.</b> Cole no Claude para gerar a leitura.";}catch(e){out.textContent="Abra no app Claude para análise ao vivo.";}}}
