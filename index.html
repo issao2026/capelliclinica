@@ -126,7 +126,8 @@ tr.clk{cursor:pointer}tr.clk:hover{background:#faf8f3}
         <div style="font-size:26px;font-weight:800;margin-top:6px" id="metaReal">—</div>
         <div class="meta-bar"><i id="metaBar" style="width:0%"></i></div>
         <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px"><span id="metaPct">—</span><span>Meta: <b id="metaVal">—</b></span></div>
-        <div class="upload upzone" id="upHome" onclick="uploadFlow()" style="margin-top:18px">
+        <input type="file" id="upInput" multiple accept=".pdf,image/*" style="display:none" onchange="uploadFlow(this)">
+        <div class="upload upzone" id="upHome" onclick="document.getElementById('upInput').click()" style="margin-top:18px">
           <div class="ic">📤</div>
           <p style="margin:8px 0 2px;font-weight:600">Subir exames do paciente</p>
           <small style="color:var(--muted)">PDF laboratorial + tricoscopia · a IA checa duplicidade por nome/CPF</small>
@@ -288,22 +289,22 @@ function buildDados(p){const t=TPL[p.perfil];return REF.map(ref=>{const r=rng(re
 /* ---------- PACIENTES (fictícios) ---------- */
 const MES=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
 const PAC=[
- {nome:"Carlos Andrade",cpf:"123.456.789-00",sexo:"M",idade:38,peso:82,mes:6,valor:2500,perfil:"ruim",ctx:"Queda capilar difusa há ~6 meses + cansaço · Norwood IV"},
- {nome:"Mariana Souza",cpf:"234.567.890-11",sexo:"F",idade:34,peso:63,mes:6,valor:1800,perfil:"ruim",ctx:"Afinamento difuso + queda no pós-parto"},
- {nome:"Rafael Lima",cpf:"345.678.901-22",sexo:"M",idade:41,peso:88,mes:6,valor:3200,perfil:"medio",ctx:"Entradas frontais · acompanhamento pós-transplante"},
- {nome:"João Pereira",cpf:"456.789.012-33",sexo:"M",idade:29,peso:75,mes:5,valor:2500,perfil:"bom",ctx:"Manutenção · couro saudável"},
- {nome:"Ana Beatriz",cpf:"567.890.123-44",sexo:"F",idade:45,peso:70,mes:5,valor:2100,perfil:"medio",ctx:"Eflúvio + alteração tireoidiana em investigação"},
- {nome:"Pedro Gomes",cpf:"678.901.234-55",sexo:"M",idade:52,peso:91,mes:5,valor:4000,perfil:"ruim",ctx:"Calvície avançada + síndrome metabólica"},
- {nome:"Lucas Martins",cpf:"789.012.345-66",sexo:"M",idade:33,peso:79,mes:4,valor:2500,perfil:"medio",ctx:"Queda recente · estresse"},
- {nome:"Fernanda Dias",cpf:"890.123.456-77",sexo:"F",idade:39,peso:66,mes:4,valor:1800,perfil:"bom",ctx:"Manutenção ortomolecular"},
- {nome:"Bruno Alves",cpf:"901.234.567-88",sexo:"M",idade:47,peso:95,mes:3,valor:3500,perfil:"medio",ctx:"Rarefação no vértex"},
- {nome:"Tiago Rocha",cpf:"012.345.678-99",sexo:"M",idade:36,peso:80,mes:3,valor:2500,perfil:"ruim",ctx:"Ferritina baixa + eflúvio telógeno"},
- {nome:"Camila Nunes",cpf:"112.233.445-56",sexo:"F",idade:31,peso:58,mes:2,valor:1800,perfil:"medio",ctx:"Afinamento + dieta restritiva"},
- {nome:"Eduardo Ramos",cpf:"223.344.556-67",sexo:"M",idade:44,peso:86,mes:2,valor:3000,perfil:"bom",ctx:"Pós-transplante 12 meses"},
- {nome:"Marcos Vieira",cpf:"334.455.667-78",sexo:"M",idade:34,peso:78,mes:1,valor:2500,perfil:"bom",ctx:"Check-up capilar de rotina"},
- {nome:"Roberto Pinto",cpf:"445.566.778-89",sexo:"M",idade:49,peso:90,mes:1,valor:4200,perfil:"ruim",ctx:"Calvície + déficits múltiplos"}
+ {nome:"Carlos Andrade",cpf:"123.456.789-00",sexo:"M",idade:38,peso:82,mes:6,valor:18500,perfil:"ruim",ctx:"Transplante capilar FUE · Norwood IV + déficits"},
+ {nome:"Mariana Souza",cpf:"234.567.890-11",sexo:"F",idade:34,peso:63,mes:6,valor:6500,perfil:"ruim",ctx:"Protocolo ortomolecular + soroterapia · pós-parto"},
+ {nome:"Rafael Lima",cpf:"345.678.901-22",sexo:"M",idade:41,peso:88,mes:6,valor:22000,perfil:"medio",ctx:"Transplante FUE entradas frontais"},
+ {nome:"João Pereira",cpf:"456.789.012-33",sexo:"M",idade:29,peso:75,mes:5,valor:4800,perfil:"bom",ctx:"Manutenção · soroterapia capilar"},
+ {nome:"Ana Beatriz",cpf:"567.890.123-44",sexo:"F",idade:45,peso:70,mes:5,valor:5500,perfil:"medio",ctx:"Tratamento clínico + tireoide em investigação"},
+ {nome:"Pedro Gomes",cpf:"678.901.234-55",sexo:"M",idade:52,peso:91,mes:5,valor:24000,perfil:"ruim",ctx:"Transplante FUE · calvície avançada"},
+ {nome:"Lucas Martins",cpf:"789.012.345-66",sexo:"M",idade:33,peso:79,mes:4,valor:5200,perfil:"medio",ctx:"Tratamento clínico · queda por estresse"},
+ {nome:"Fernanda Dias",cpf:"890.123.456-77",sexo:"F",idade:39,peso:66,mes:4,valor:4200,perfil:"bom",ctx:"Manutenção ortomolecular"},
+ {nome:"Bruno Alves",cpf:"901.234.567-88",sexo:"M",idade:47,peso:95,mes:3,valor:19500,perfil:"medio",ctx:"Transplante FUE · rarefação no vértex"},
+ {nome:"Tiago Rocha",cpf:"012.345.678-99",sexo:"M",idade:36,peso:80,mes:3,valor:5800,perfil:"ruim",ctx:"Protocolo de reposição · eflúvio telógeno"},
+ {nome:"Camila Nunes",cpf:"112.233.445-56",sexo:"F",idade:31,peso:58,mes:2,valor:4500,perfil:"medio",ctx:"Tratamento clínico + dieta restritiva"},
+ {nome:"Eduardo Ramos",cpf:"223.344.556-67",sexo:"M",idade:44,peso:86,mes:2,valor:21000,perfil:"bom",ctx:"Transplante FUE · retorno 12 meses"},
+ {nome:"Marcos Vieira",cpf:"334.455.667-78",sexo:"M",idade:34,peso:78,mes:1,valor:4800,perfil:"bom",ctx:"Check-up capilar + manutenção"},
+ {nome:"Roberto Pinto",cpf:"445.566.778-89",sexo:"M",idade:49,peso:90,mes:1,valor:25000,perfil:"ruim",ctx:"Transplante FUE · calvície + déficits múltiplos"}
 ];
-const META=10000;
+const META=60000;
 
 /* ---------- núcleo de classificação ---------- */
 function classify(d){if(d.v<d.nl||d.v>d.nh)return{k:"red",t:(d.v<d.nl?"Déficit":"Excesso")};if(d.v<d.ol||d.v>d.oh)return{k:"amber",t:"Subótimo"};return{k:"ok",t:"Ótimo"};}
@@ -358,13 +359,13 @@ function renderLista(){
     return `<tr class="clk" onclick="abrirPaciente(${i})"><td><b>${p.nome}</b></td><td>${sx}</td><td>${p.idade}</td><td>${MES[p.mes-1]}</td><td>${st}</td><td>${fmtBRL(p.valor)}</td></tr>`;
   }).join("")||'<tr><td colspan="6" style="color:var(--muted);padding:18px">Nenhum paciente encontrado.</td></tr>';
 }
-function uploadFlow(){
-  const nomes=PAC.map(p=>p.nome).join(", ");
+function uploadFlow(inp){
+  const n=inp&&inp.files?inp.files.length:0;if(!n)return;
   const ex=PAC[Math.floor(Math.random()*PAC.length)];
   document.getElementById('upMsg').innerHTML=
-   `<div class="dupmsg warn">📎 Exame recebido. A IA leu o nome <b>“${ex.nome}”</b> e encontrou um paciente com mesmo nome.<br>
-    CPF do arquivo: <b>${ex.cpf}</b> — confere com o cadastro → <b>sem duplicidade</b>.<br>
-    <div class="row"><button class="btn primary" onclick="abrirPacienteByName('${ex.nome}')">Atualizar ${ex.nome.split(' ')[0]}</button><button class="btn ghost" onclick="document.getElementById('upMsg').innerHTML='<div class=\\'dupmsg ok\\'>✓ Novo paciente criado (aguardando preenchimento de CPF, sexo, idade e peso).</div>'">Criar novo</button></div></div>`;
+   `<div class="dupmsg warn">📎 <b>${n} arquivo(s)</b> recebido(s). A IA leu o nome <b>“${ex.nome}”</b> e encontrou um paciente com mesmo nome.<br>
+    CPF do arquivo: <b>${ex.cpf}</b> → confere com o cadastro → <b>sem duplicidade</b>.<br>
+    <div class="row"><button class="btn primary" onclick="abrirPacienteByName('${ex.nome}')">Atualizar ${ex.nome.split(' ')[0]}</button><button class="btn ghost" onclick="document.getElementById('upMsg').innerHTML='<div class=\\'dupmsg ok\\'>✓ Novo paciente criado (preencher CPF, sexo, idade e peso).</div>'">Criar novo</button></div></div>`;
 }
 function abrirPacienteByName(n){const i=PAC.findIndex(p=>p.nome===n);if(i>=0)abrirPaciente(i);}
 
