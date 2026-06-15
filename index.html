@@ -78,7 +78,7 @@ tr.clk{cursor:pointer}tr.clk:hover{background:#faf8f3}
 .bodyimg img{width:100%;display:block;border-radius:12px}
 #bodyfb,.imgfb{display:none;color:#86827b;font-size:13px;padding:18px;border:1px dashed var(--line);border-radius:11px;text-align:center}
 .hot2{position:absolute;width:16px;height:16px;border-radius:50%;transform:translate(-50%,-50%);cursor:pointer;z-index:3;background:rgba(192,57,43,.55);border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:.15s}
-.hot2:hover{background:rgba(192,57,43,.9)}
+.hot2:hover{background:#c0392b;transform:translate(-50%,-50%) scale(1.8);box-shadow:0 0 0 7px rgba(192,57,43,.18),0 1px 3px rgba(0,0,0,.3);z-index:6}
 .hot2.on{background:#c0392b;animation:pulseDot 1.3s infinite}
 @keyframes pulseDot{0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,.5)}50%{box-shadow:0 0 0 14px rgba(192,57,43,0)}}
 .infoblock{margin-top:12px}.infoblock b{color:var(--ink)}
@@ -439,12 +439,12 @@ function renderPrioridades(){
   }).join("")+`<div class="plegend"><span><i style="background:#f3c5bf"></i>Abaixo</span><span><i style="background:#bfe3c8"></i>Faixa ótima</span><span><i style="background:#f3e3b0"></i>Acima</span></div>`;
 }
 const BODYPTS=[
- {mk:"T4 livre",x:50,y:23},
- {mk:"Vitamina D (25-OH)",x:46,y:32},
- {mk:"Vitamina D (25-OH)",x:55,y:32},
- {mk:"Vitamina B12",x:49,y:41},
- {mk:"Ferritina",x:55,y:50},
- {mk:"Testosterona livre",x:50,y:57}
+ {mk:"T4 livre",x:50,y:18},
+ {mk:"Vitamina D (25-OH)",x:45,y:28},
+ {mk:"Vitamina D (25-OH)",x:56,y:28},
+ {mk:"Vitamina B12",x:50,y:37},
+ {mk:"Ferritina",x:57,y:46},
+ {mk:"Testosterona livre",x:50,y:55}
 ];
 const INFO={
  "Ferritina":{iso:"Reserva de ferro do corpo. O ferro oxigena e sustenta o ciclo de crescimento do folículo — reserva baixa é o gatilho nº1 de eflúvio telógeno (queda difusa).",conj:"Confirme com <b>saturação de transferrina</b> e <b>hemoglobina</b>. Ferritina baixa + <b>TSH</b> alto agrava a queda. Inflamação eleva a ferritina falsamente — cruze com PCR."},
