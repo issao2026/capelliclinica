@@ -3,14 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Capelli IA · Análise de Exames</title>
+<title>Capelli IA · Painel da Clínica</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
 <style>
-:root{color-scheme:light;--bg:#faf9f7;--card:#ffffff;--ink:#141414;--muted:#86827b;--line:#ece9e3;--green:#1a1a1a;--green-soft:#f2f0ea;--gold:#b8b1a3;--red:#c0392b;--red-soft:#fbeae8;--amber:#b9770e;--amber-soft:#fdf3e3;--ok:#1f8f5f;--ok-soft:#e6f5ec;--shadow:0 1px 3px rgba(20,20,18,.07),0 6px 20px rgba(20,20,18,.05)}
+:root{color-scheme:light;--bg:#faf9f7;--card:#ffffff;--ink:#141414;--muted:#86827b;--line:#ece9e3;--green:#1a1a1a;--green-soft:#f2f0ea;--gold:#b8b1a3;--red:#c0392b;--red-soft:#fbeae8;--amber:#b9770e;--amber-soft:#fdf3e3;--ok:#1f8f5f;--ok-soft:#e6f5ec;--blue:#2f6fed;--shadow:0 1px 3px rgba(20,20,18,.07),0 6px 20px rgba(20,20,18,.05)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.45}
 .wrap{max-width:1080px;margin:0 auto;padding:20px 18px 60px}
 header.top{display:flex;align-items:center;gap:16px;padding:20px 24px;background:#111;border-radius:14px;margin-bottom:22px;box-shadow:var(--shadow)}
+.brand{cursor:pointer}
 .brand p{margin:7px 0 0;font-size:12px;color:#a8a296}
 .tagpill{margin-left:auto;font-size:11px;color:#e9e4d8;background:#262626;border:1px solid #3a3a3a;padding:5px 11px;border-radius:999px;font-weight:600;letter-spacing:.3px}
 .wordmark{position:relative;display:inline-block;line-height:.9}
@@ -18,30 +19,44 @@ header.top{display:flex;align-items:center;gap:16px;padding:20px 24px;background
 .wm-sub{position:absolute;top:-9px;right:6px;font-size:11px;letter-spacing:5px;color:#d8d1c2;font-family:Georgia,"Times New Roman",serif;font-style:italic}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:18px 20px;margin-bottom:18px}
 .card h2{font-size:13px;margin:0 0 4px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
-.upload{border:2px dashed var(--line);border-radius:14px;padding:26px;text-align:center;background:#fcfbf9;transition:.15s;cursor:pointer}
-.upload.drag{border-color:var(--ink);background:var(--green-soft)}
-.upload .ic{font-size:30px}
-.upload p{margin:8px 0 2px;font-weight:600}
-.upload small{color:var(--muted)}
-.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
 .btn{border:0;border-radius:10px;padding:11px 16px;font-size:14px;font-weight:600;cursor:pointer;transition:.12s}
 .btn.primary{background:#141414;color:#fff}.btn.primary:hover{background:#000}
-.btn.good{background:#fff;border:1.5px solid #cfe3d6;color:#1f8f5f}.btn.good:hover{background:#1f8f5f;color:#fff}
 .btn.ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}.btn.ghost:hover{border-color:var(--ink)}
 .btn.live{background:#fff;border:1.5px solid #141414;color:#141414}.btn.live:hover{background:#141414;color:#fff}
 .btn.wa{background:#fff;border:1.5px solid #cfe3d6;color:#1f8f5f}.btn.wa:hover{background:#25d366;border-color:#25d366;color:#fff}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
 .hidden{display:none!important}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:14px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);display:flex;align-items:center;gap:13px}
+.kpi .ico{font-size:20px;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#f2f0ea;flex:none}
+.kpi b{display:block;font-size:26px;line-height:1}.kpi span{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.kpi.red{background:#fdf1ef;border-color:#f3d4ce}.kpi.red .ico{background:#f7d9d3}.kpi.red b{color:var(--red)}
+.kpi.amber{background:#fdf6e9;border-color:#f0e0bd}.kpi.amber .ico{background:#f6e6c2}.kpi.amber b{color:var(--amber)}
+.kpi.ok{background:#eef7f0;border-color:#cfe7d6}.kpi.ok .ico{background:#d6ecdc}.kpi.ok b{color:var(--ok)}
+.kpi.blue{background:#eef3fd;border-color:#cfdef9}.kpi.blue .ico{background:#d8e6fb}.kpi.blue b{color:var(--blue)}
+.grid2{display:grid;grid-template-columns:1.3fr .7fr;gap:18px}
+@media(max-width:820px){.grid2{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line)}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+td.val{font-weight:700}
+tr.clk{cursor:pointer}tr.clk:hover{background:#faf8f3}
+.chip{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.chip.red{background:var(--red-soft);color:var(--red)}.chip.amber{background:var(--amber-soft);color:var(--amber)}.chip.ok{background:var(--ok-soft);color:var(--ok)}
+.chip.sex{background:#eef3fd;color:var(--blue)}.chip.sexf{background:#fbeefb;color:#a14aa1}
+.search{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:10px;font-size:14px}
+.meta-bar{height:12px;border-radius:7px;background:#efece6;overflow:hidden;margin-top:8px}
+.meta-bar i{display:block;height:12px;border-radius:7px;background:linear-gradient(90deg,#1f8f5f,#2fbd7e)}
+.upload{border:2px dashed var(--line);border-radius:14px;padding:22px;text-align:center;background:#fcfbf9;cursor:pointer}
+.upload:hover{border-color:var(--ink)}
+.upzone .ic{font-size:26px}
+.dupmsg{font-size:13px;border-radius:10px;padding:12px 14px;margin-top:12px}
+.dupmsg.warn{background:var(--amber-soft);border:1px solid #f0e0bd}
+.dupmsg.ok{background:var(--ok-soft);border:1px solid #cfe7d6}
 .patient{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
 .avatar{width:54px;height:54px;border-radius:50%;background:var(--green-soft);color:var(--ink);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:20px;font-family:Georgia,serif}
 .patient .meta b{font-size:16px}.patient .meta span{display:block;font-size:13px;color:var(--muted)}
 .mask{cursor:pointer;font-size:11px;color:var(--ink);border:1px solid var(--line);background:var(--green-soft);padding:4px 10px;border-radius:999px;font-weight:600;margin-left:auto}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:14px}
-.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);display:flex;align-items:center;gap:13px}
-.kpi .ico{font-size:20px;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#f2f0ea;flex:none}
-.kpi b{display:block;font-size:30px;line-height:1}.kpi span{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
-.kpi.red{background:#fdf1ef;border-color:#f3d4ce}.kpi.red .ico{background:#f7d9d3}.kpi.red b{color:var(--red)}
-.kpi.amber{background:#fdf6e9;border-color:#f0e0bd}.kpi.amber .ico{background:#f6e6c2}.kpi.amber b{color:var(--amber)}
-.kpi.ok{background:#eef7f0;border-color:#cfe7d6}.kpi.ok .ico{background:#d6ecdc}.kpi.ok b{color:var(--ok)}
 .pbar{position:relative;height:9px;border-radius:5px;background:#efece6}
 .zred{position:absolute;top:0;height:9px;background:#f3c5bf;border-radius:5px 0 0 5px}
 .zgrn{position:absolute;top:0;height:9px;background:#bfe3c8}
@@ -49,113 +64,91 @@ header.top{display:flex;align-items:center;gap:16px;padding:20px 24px;background
 .pdot{position:absolute;top:-3px;width:15px;height:15px;border-radius:50%;border:2px solid #fff;transform:translateX(-50%);box-shadow:0 1px 3px rgba(0,0,0,.3)}
 .prow{display:grid;grid-template-columns:120px 78px 26px 1fr 26px;align-items:center;gap:8px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13px}
 .prow .pnm{font-weight:600}.prow .pvl{font-weight:800;font-size:15px}.prow .pend{font-size:11px;color:var(--muted);text-align:center}
-.plegend{display:flex;gap:14px;font-size:11px;color:var(--muted);margin-top:12px}
+.plegend{display:flex;gap:14px;font-size:11px;color:var(--muted);margin-top:12px;flex-wrap:wrap}
 .plegend i{width:11px;height:11px;border-radius:3px;display:inline-block;margin-right:4px;vertical-align:-1px}
-table{width:100%;border-collapse:collapse;font-size:13.5px}
-th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line)}
-th{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
-td.val{font-weight:700}
-.chip{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
-.chip.red{background:var(--red-soft);color:var(--red)}.chip.amber{background:var(--amber-soft);color:var(--amber)}.chip.ok{background:var(--ok-soft);color:var(--ok)}
-.scale{position:relative;height:8px;background:#efece6;border-radius:6px;min-width:120px}
+.scale{position:relative;height:8px;background:#efece6;border-radius:6px;min-width:90px}
 .scale .opt{position:absolute;top:0;height:8px;background:rgba(20,20,20,.16);border-radius:6px}
 .scale .mk{position:absolute;top:-3px;width:3px;height:14px;border-radius:2px;background:var(--ink)}
-.grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
-@media(max-width:820px){.grid2{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}}
+.disclaimer{font-size:12px;color:var(--muted);background:#fff;border:1px solid var(--line);border-left:3px solid var(--ink);border-radius:8px;padding:12px 14px}
 .impact li{margin-bottom:9px;font-size:13.5px}.impact b{color:var(--ink)}
 .proto{background:var(--green-soft);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:13.5px}
 .proto h3{margin:0 0 8px;font-size:13px;color:var(--ink);text-transform:uppercase;letter-spacing:.5px}
 .proto ul{margin:0;padding-left:18px}.proto li{margin-bottom:6px}
-.imgs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-@media(max-width:820px){.imgs{grid-template-columns:1fr 1fr}}
-.imgcard{border:1px solid var(--line);border-radius:11px;overflow:hidden;background:#fff}
-.imgcard .ph{height:104px;display:flex;align-items:center;justify-content:center;background:#f4f2ee}
-.imgcard .cap{padding:9px 11px;font-size:12px}.imgcard .cap b{display:block;margin-bottom:2px}
-.disclaimer{font-size:12px;color:var(--muted);background:#fff;border:1px solid var(--line);border-left:3px solid var(--ink);border-radius:8px;padding:12px 14px}
-.live-out{white-space:pre-wrap;font-size:13.5px;background:#fcfbf9;border:1px solid var(--line);border-radius:10px;padding:14px;margin-top:4px}
-.spinner{display:inline-block;width:15px;height:15px;border:2px solid #141414;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:7px}
-@keyframes spin{to{transform:rotate(360deg)}}
-.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:12px}
-.legend i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:5px;vertical-align:0}
-.bodywrap{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch}
-@media(max-width:820px){.bodywrap{grid-template-columns:1fr}}
-.bodystage{position:relative;height:400px;background:radial-gradient(circle at 50% 32%,#f3f1ec,#faf9f7);border-radius:14px;overflow:hidden;border:1px solid var(--line)}
-.bodyimg{position:relative;width:100%;max-width:780px;margin:0 auto;min-height:120px}
+.bodyimg{position:relative;width:100%;max-width:760px;margin:0 auto;min-height:120px}
 .bodyimg img{width:100%;display:block;border-radius:12px}
-#bodyfb{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;color:#86827b;font-size:13px;padding:24px;background:#f3f1ec;border-radius:12px}
-.blabel{position:absolute;transform:translate(-50%,-50%);background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:4px 9px;font-size:11.5px;font-weight:700;box-shadow:var(--shadow);white-space:nowrap;z-index:2}
-.blabel small{font-weight:500;color:var(--muted)}
-.blabel.red{border-color:#d24b3e}.blabel.amber{border-color:#e0a93b}.blabel.ok{border-color:#2f6fed}
-.bdot{position:absolute;width:12px;height:12px;border-radius:50%;transform:translate(-50%,-50%);z-index:1;box-shadow:0 0 0 3px rgba(255,255,255,.85)}
-.bdot.red{background:#d24b3e}.bdot.amber{background:#e0a93b}.bdot.ok{background:#2f6fed}
-svg.fig{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);height:360px}
-.hot{position:absolute;width:13px;height:13px;border-radius:50%;transform:translate(-50%,-50%);cursor:pointer;z-index:3}
-.hot.red{background:#c0392b;animation:pulseR 1.9s infinite}.hot.amber{background:#b9770e;animation:pulseA 1.9s infinite}.hot.ok{background:#1f8f5f;animation:pulseO 1.9s infinite}
-.hot.active{width:19px;height:19px;outline:3px solid #fff;z-index:5}
-@keyframes pulseR{0%{box-shadow:0 0 0 0 rgba(192,57,43,.5)}70%{box-shadow:0 0 0 15px rgba(192,57,43,0)}100%{box-shadow:0 0 0 0 rgba(192,57,43,0)}}
-@keyframes pulseA{0%{box-shadow:0 0 0 0 rgba(185,119,14,.5)}70%{box-shadow:0 0 0 15px rgba(185,119,14,0)}100%{box-shadow:0 0 0 0 rgba(185,119,14,0)}}
-@keyframes pulseO{0%{box-shadow:0 0 0 0 rgba(31,143,95,.5)}70%{box-shadow:0 0 0 15px rgba(31,143,95,0)}100%{box-shadow:0 0 0 0 rgba(31,143,95,0)}}
-.chipf{position:absolute;transform:translate(-50%,-50%);background:#fff;border:1px solid var(--line);border-radius:8px;padding:3px 8px;font-size:10.5px;font-weight:700;white-space:nowrap;box-shadow:var(--shadow);pointer-events:none;z-index:4;animation:drift 3.4s ease-in-out infinite}
-.chipf small{font-weight:500;color:var(--muted)}
-.chipf.red{border-color:#f1c9c4}.chipf.amber{border-color:#f0d8a8}.chipf.ok{border-color:#bfe3cf}
-@keyframes drift{0%,100%{opacity:.9;margin-top:0}50%{opacity:1;margin-top:-7px}}
-.organpanel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column}
-.organpanel h3{margin:0 0 2px;color:var(--ink);font-size:17px;font-family:Georgia,serif;font-weight:500}
-.organpanel .sub{font-size:12.5px;color:var(--muted);margin-bottom:12px}
-.orgline{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+#bodyfb,.imgfb{display:none;color:#86827b;font-size:13px;padding:18px;border:1px dashed var(--line);border-radius:11px;text-align:center}
+.bodywrap{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+@media(max-width:820px){.bodywrap{grid-template-columns:1fr}}
+.microlbl{font-size:11.5px;color:var(--muted);font-weight:700;margin:0 0 8px;text-transform:uppercase;letter-spacing:.4px}
+.imgcard img{width:100%;border-radius:11px;border:1px solid var(--line);display:block}
+.annostage{min-height:240px;border:1px solid var(--line);border-radius:11px;overflow:hidden;background:#161616;display:flex;align-items:center;justify-content:center;color:#8a857c;font-size:13px;cursor:pointer}
+.annostage svg{width:100%;height:100%;display:block}
+.organpanel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.organpanel h3{margin:0 0 2px;color:var(--ink);font-size:16px;font-family:Georgia,serif;font-weight:500}
+.organpanel .sub{font-size:12.5px;color:var(--muted);margin-bottom:10px}
+.orgline{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}
 .orgline .nm{flex:1}.orgline .pv{font-weight:700}
 .orgnote{margin-top:12px;font-size:12px;color:var(--muted);background:var(--green-soft);border-radius:8px;padding:8px 10px}
-.dotnav{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
-.dotnav button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 11px;font-size:11.5px;cursor:pointer}
-.dotnav button.on{background:#141414;border-color:#141414;color:#fff;font-weight:700}
-.microlbl{font-size:11.5px;color:var(--muted);font-weight:700;margin:0 0 8px;text-transform:uppercase;letter-spacing:.4px}
-.ba{position:relative;height:236px;border-radius:11px;overflow:hidden;border:1px solid var(--line);user-select:none}
-.ba-layer{position:absolute;inset:0}.ba-layer svg{width:100%;height:100%;display:block}
-.ba-before{clip-path:inset(0 50% 0 0);z-index:2}
-.ba-handle{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#fff;z-index:3;box-shadow:0 0 4px rgba(0,0,0,.3)}
-.ba-handle::after{content:"⇆";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;color:#141414;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;box-shadow:var(--shadow)}
-.ba-tagL,.ba-tagR{position:absolute;top:8px;font-size:10px;font-weight:700;color:#fff;background:rgba(0,0,0,.55);padding:2px 8px;border-radius:5px;z-index:3;letter-spacing:.5px}
-.ba-tagL{left:8px}.ba-tagR{right:8px}
-.ba input[type=range]{position:absolute;bottom:9px;left:8%;width:84%;z-index:4;accent-color:#141414}
-@keyframes annoIn{to{opacity:1}}
-.anno{opacity:0;animation:annoIn .55s ease forwards}
-.annostage{min-height:272px;border:1px solid var(--line);border-radius:11px;overflow:hidden;background:#161616;display:flex;align-items:center;justify-content:center;color:#8a857c;font-size:13px;cursor:pointer}
-.annostage svg{width:100%;height:100%;display:block}
+.live-out{white-space:pre-wrap;font-size:13.5px;background:#fcfbf9;border:1px solid var(--line);border-radius:10px;padding:14px;margin-top:4px}
+.backlink{font-size:13px;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:6px;margin-bottom:6px}
+.backlink:hover{color:var(--ink)}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
-    <div class="brand">
-      <img src="logo-capelli.webp" alt="Clínica Capelli" style="height:52px;display:block" onerror="var n=['logo_head.webp','logo-capelli.png','logo-capelli.jpg','logo.png','logo.jpg','capelli.png'];var i=+(this.dataset.i||0);if(i<n.length){this.dataset.i=i+1;this.src=n[i]}else{this.style.display='none';document.getElementById('wmfb').style.display='inline-block'}">
+    <div class="brand" onclick="showView('home')" title="Ir para o início">
+      <img src="logo-capelli.webp" alt="Clínica Capelli" style="height:52px;display:block" data-srcs="logo-capelli.webp,logo_head.webp,logo-capelli.png,logo.png" data-i="0" data-fb="wmfb" onerror="nextSrc(this)">
       <span class="wordmark" id="wmfb" style="display:none"><span class="wm-sub">clínica</span><span class="wm-main">CAPELLI</span></span>
-      <p>IA · Análise de Exames — Dr. Rodrigo Redondo · CRM 183765 · Ourinhos &amp; Bauru</p>
+      <p>IA · Painel da Clínica — Dr. Rodrigo Redondo · CRM 183765 · Ourinhos &amp; Bauru</p>
     </div>
     <div class="tagpill">protótipo · uso interno</div>
   </header>
 
-  <section class="card">
-    <h2>Entrada de exames</h2>
-    <div class="upload" id="dz">
-      <div class="ic">🧪📄</div>
-      <p>Arraste os PDFs dos exames laboratoriais</p>
-      <small>Hemograma, ferro/ferritina, vitaminas, hormônios — e exames de imagem (tricoscopia, ultrassom)</small>
+  <!-- ===================== HOME ===================== -->
+  <div id="home">
+    <div class="kpis">
+      <div class="kpi"><span class="ico">🧑‍🤝‍🧑</span><div><b id="hPac">—</b><span>Pacientes no ano</span></div></div>
+      <div class="kpi blue"><span class="ico">📅</span><div><b id="hMes">—</b><span>Atendimentos no mês</span></div></div>
+      <div class="kpi ok"><span class="ico">💰</span><div><b id="hFat">—</b><span>Faturamento do mês</span></div></div>
+      <div class="kpi"><span class="ico">🎫</span><div><b id="hTicket">—</b><span>Ticket médio</span></div></div>
     </div>
-    <div class="row">
-      <button class="btn primary" onclick="carregarExemplo('ruim')">▶ Paciente — quadro ruim</button>
-      <button class="btn good" onclick="carregarExemplo('bom')">▶ Paciente — quadro bom</button>
-      <button class="btn live" onclick="analisarAoVivo()">✦ Analisar ao vivo com Claude</button>
-      <button class="btn wa" onclick="enviarWhats()">📲 Enviar ao paciente (WhatsApp)</button>
-      <button class="btn ghost" onclick="location.reload()">↺ Limpar</button>
-    </div>
-    <div class="legend">
-      <span><i style="background:rgba(20,20,20,.4)"></i>faixa ótima</span>
-      <span><i style="background:#efece6"></i>faixa laboratorial normal</span>
-      <span><i style="background:#141414"></i>valor do paciente</span>
-    </div>
-  </section>
 
-  <div id="result" class="hidden">
+    <div class="grid2">
+      <section class="card">
+        <h2>Atendimentos por mês · 2026</h2>
+        <div style="height:300px;position:relative"><canvas id="chartMes"></canvas></div>
+        <p style="font-size:12px;color:var(--muted);margin:8px 0 0">Clique numa barra para filtrar a lista de pacientes do mês.</p>
+      </section>
+      <section class="card">
+        <h2>Meta mensal</h2>
+        <div style="font-size:13px;color:var(--muted)">Junho · realizado vs meta</div>
+        <div style="font-size:26px;font-weight:800;margin-top:6px" id="metaReal">—</div>
+        <div class="meta-bar"><i id="metaBar" style="width:0%"></i></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px"><span id="metaPct">—</span><span>Meta: <b id="metaVal">—</b></span></div>
+        <div class="upload upzone" id="upHome" onclick="uploadFlow()" style="margin-top:18px">
+          <div class="ic">📤</div>
+          <p style="margin:8px 0 2px;font-weight:600">Subir exames do paciente</p>
+          <small style="color:var(--muted)">PDF laboratorial + tricoscopia · a IA checa duplicidade por nome/CPF</small>
+        </div>
+        <div id="upMsg"></div>
+      </section>
+    </div>
+
+    <section class="card">
+      <h2>Pacientes atendidos</h2>
+      <input class="search" id="busca" placeholder="🔎 Buscar paciente por nome..." oninput="renderLista()">
+      <div style="margin-top:8px;font-size:12px;color:var(--muted)" id="filtroMes"></div>
+      <table style="margin-top:6px">
+        <thead><tr><th>Paciente</th><th>Sexo</th><th>Idade</th><th>Mês</th><th>Status</th><th>Valor</th></tr></thead>
+        <tbody id="listaPac"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <!-- ===================== ANÁLISE ===================== -->
+  <div id="analise" class="hidden">
+    <div class="backlink" onclick="showView('home')">← Voltar ao painel</div>
     <section class="card">
       <div style="display:flex;align-items:center;gap:8px"><h2 style="margin:0">Paciente</h2>
         <button class="mask" id="maskBtn" onclick="toggleMask()">🔒 Ocultar identificação</button></div>
@@ -164,7 +157,7 @@ svg.fig{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);height
         <div class="meta">
           <b id="pName">—</b>
           <span id="pCtx">—</span>
-          <span>14 biomarcadores analisados · referência: faixa ótima ortomolecular</span>
+          <span id="pBio">—</span>
         </div>
       </div>
       <div class="kpis">
@@ -175,15 +168,19 @@ svg.fig{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);height
         <div class="kpi"><span class="ico">🧴</span><div><b id="kImp">—</b><span>Impactam cabelo</span></div></div>
         <div class="kpi"><div id="gauge" style="width:54px;height:54px;flex:none"></div><div><b style="font-size:14px;font-weight:700;line-height:1.2">Saúde geral</b><span>índice do paciente</span></div></div>
       </div>
+      <div class="row">
+        <button class="btn live" onclick="analisarAoVivo()">✦ Analisar ao vivo com Claude</button>
+        <button class="btn wa" onclick="enviarWhats()">📲 Enviar ao paciente (WhatsApp)</button>
+      </div>
     </section>
 
     <section class="card">
       <h2>Mapa corporal · de onde vem cada índice</h2>
       <div class="bodyimg" id="stage">
-        <img id="bodyimgEl" src="mapa-corporal.png" alt="Mapa corporal" data-srcs="mapa-corporal.png,mapa-corporal.jpg,mapa-corporal.jpeg,corpo.png,corpo.jpg,corpo.jpeg,mapacorporal.png" data-i="0" data-fb="bodyfb" onerror="nextSrc(this)">
-        <div id="bodyfb">Salve a imagem do corpo como <b style="margin:0 4px">mapa-corporal.png</b> (ou .jpg) na mesma pasta deste arquivo e recarregue.</div>
+        <img id="bodyimgEl" src="mapa-corporal.png" alt="Mapa corporal" data-srcs="mapa-corporal.png,mapa-corporal.jpg,corpo.png,corpo.jpg" data-i="0" data-fb="bodyfb" onerror="nextSrc(this)">
+        <div id="bodyfb">Salve a imagem do corpo como <b>mapa-corporal.png</b> na mesma pasta.</div>
       </div>
-      <p class="disclaimer" style="margin-top:12px">Cada etiqueta mostra o valor do paciente no órgão de origem. Cor: <b style="color:#2f6fed">azul</b> ideal · <b style="color:#e0a93b">amarelo</b> atenção · <b style="color:#d24b3e">vermelho</b> alterado.</p>
+      <p class="disclaimer" style="margin-top:12px">As faixas se ajustam ao <b>sexo</b> do paciente. Idade e peso entram na leitura clínica do médico.</p>
     </section>
 
     <div class="grid2">
@@ -216,30 +213,24 @@ svg.fig{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);height
         <ul class="impact" id="impact"></ul>
       </section>
       <section class="card">
-        <h2>Direcionamento de protocolo · sugestão</h2>
-        <div class="proto"><h3>Conduta sugerida (revisão médica obrigatória)</h3><ul id="proto"></ul></div>
-        <p class="disclaimer" style="margin-top:12px">⚠️ Sugestão gerada por IA como <b>suporte à decisão</b>. Doses, fórmulas e conduta dependem de avaliação e prescrição do médico responsável.</p>
+        <h2>Conduta sugerida</h2>
+        <div class="proto"><h3>Direcionamento (revisão médica obrigatória)</h3><ul id="proto"></ul></div>
+        <p class="disclaimer" style="margin-top:12px">⚠️ Suporte à decisão. Doses, fórmulas e conduta dependem de prescrição do médico responsável.</p>
       </section>
     </div>
 
     <section class="card">
-      <h2>Couro cabeludo &amp; simulação capilar</h2>
+      <h2>Couro cabeludo &amp; resultado</h2>
       <div class="bodywrap">
-        <div>
-          <p class="microlbl">Tricoscopia digital · ampliação 200× / 1000×</p>
-          <img src="tricoscopia.png" alt="Tricoscopia" style="width:100%;border-radius:11px;border:1px solid var(--line);display:block" data-srcs="tricoscopia.png,tricoscopia.jpg,tricoscopia.jpeg,microscopia.png,microscopia.jpg,microscopia.jpeg,couro.png,couro.jpg" data-i="0" data-fb="trifb" onerror="nextSrc(this)">
-          <div id="trifb" style="display:none;color:#86827b;font-size:13px;padding:14px;border:1px dashed var(--line);border-radius:11px">Salve a imagem de tricoscopia (suas 4 fotos) como <b>tricoscopia.png</b> nesta pasta.</div>
+        <div class="imgcard">
+          <p class="microlbl">Tricoscopia digital · 200× / 1000×</p>
+          <img src="tricoscopia.png" alt="Tricoscopia" data-srcs="tricoscopia.png,tricoscopia.jpg,microscopia.png,couro.png" data-i="0" data-fb="trifb" onerror="nextSrc(this)">
+          <div id="trifb" class="imgfb">Salve a tricoscopia como <b>tricoscopia.png</b>.</div>
         </div>
-        <div>
-          <p class="microlbl">Simulação pós-aplicação capilar · arraste</p>
-          <div class="ba" id="ba">
-            <div class="ba-layer ba-after" id="baAfter"></div>
-            <div class="ba-layer ba-before" id="baBefore"></div>
-            <div class="ba-handle" id="baHandle"></div>
-            <span class="ba-tagL">ANTES</span><span class="ba-tagR">DEPOIS (simulado)</span>
-            <input type="range" min="4" max="96" value="50" id="baRange" oninput="baMove(this.value)">
-          </div>
-          <p class="disclaimer" style="margin-top:10px">Projeção visual de densidade pós-protocolo/transplante. Ilustrativa — resultado real varia por paciente.</p>
+        <div class="imgcard">
+          <p class="microlbl">Antes e depois · caso real</p>
+          <img src="antes-depois.png" alt="Antes e depois" data-srcs="antes-depois.png,antes-depois.jpg,antesdepois.png,resultado.png,depois.png" data-i="0" data-fb="abfb" onerror="nextSrc(this)">
+          <div id="abfb" class="imgfb">Salve a foto antes/depois como <b>antes-depois.png</b>.</div>
         </div>
       </div>
     </section>
@@ -248,7 +239,7 @@ svg.fig{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);height
       <h2>Imagem com leitura da IA · medidas e observações</h2>
       <div class="row" style="margin-top:0;margin-bottom:14px">
         <button class="btn primary" onclick="showAnnotated()">▶ Inserir imagem de exame (exemplo)</button>
-        <span style="font-size:12px;color:var(--muted);align-self:center;max-width:520px">Estilo laudo: a IA marca medidas e observações sobre a própria imagem — como um ecocardiograma com Doppler.</span>
+        <span style="font-size:12px;color:var(--muted);align-self:center;max-width:520px">A IA marca medidas e observações sobre a própria imagem — como um eco com Doppler.</span>
       </div>
       <div class="bodywrap">
         <div class="annostage" id="annostage" onclick="showAnnotated()">Clique para inserir a imagem e gerar o laudo →</div>
@@ -256,218 +247,180 @@ svg.fig{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);height
       </div>
     </section>
 
-    <section class="card"><h2>Leitura do agente (ao vivo)</h2><div id="liveOut" class="live-out">Clique em <b>“Analisar ao vivo com Claude”</b> para gerar a leitura clínica em tempo real a partir destes dados.</div></section>
+    <section class="card"><h2>Leitura do agente (ao vivo)</h2><div id="liveOut" class="live-out">Clique em <b>“Analisar ao vivo com Claude”</b> para gerar a leitura clínica em tempo real.</div></section>
 
-    <p class="disclaimer">Sistema de <b>uso interno</b> da clínica. Dados deste protótipo são fictícios. Em produção, a identificação do paciente pode ser mascarada (botão acima) e os dados permanecem no ambiente da clínica — conformidade LGPD por design.</p>
+    <p class="disclaimer">Sistema de <b>uso interno</b>. Dados deste protótipo são fictícios. Em produção, login do paciente, evolução clínica, comparação de imagens e histórico de exames (Supabase) — identificação mascarável (LGPD por design).</p>
   </div>
 </div>
 
 <script>
-const PAC={
- ruim:{nome:"Carlos Andrade",ini:"CA",id:"2025-0473",idadeSexo:"38 anos · M",
-  ctx:"Queixa: queda capilar difusa há ~6 meses + cansaço · estágio Norwood IV",
-  dados:[
-   {n:"Ferritina",v:24,u:"ng/mL",nl:30,nh:400,ol:70,oh:150,hair:1},
-   {n:"Ferro sérico",v:68,u:"µg/dL",nl:65,nh:175,ol:90,oh:150,hair:1},
-   {n:"Sat. transferrina",v:18,u:"%",nl:20,nh:50,ol:30,oh:40,hair:1},
-   {n:"Vitamina D (25-OH)",v:23,u:"ng/mL",nl:30,nh:100,ol:50,oh:80,hair:1},
-   {n:"Zinco",v:67,u:"µg/dL",nl:70,nh:120,ol:90,oh:120,hair:1},
-   {n:"Vitamina B12",v:320,u:"pg/mL",nl:200,nh:900,ol:500,oh:900,hair:1},
-   {n:"Ácido fólico",v:6.5,u:"ng/mL",nl:3,nh:17,ol:10,oh:17,hair:0},
-   {n:"TSH",v:3.6,u:"µUI/mL",nl:0.4,nh:4.0,ol:1.0,oh:2.0,hair:1},
-   {n:"T4 livre",v:1.0,u:"ng/dL",nl:0.9,nh:1.7,ol:1.2,oh:1.5,hair:1},
-   {n:"Testosterona total",v:310,u:"ng/dL",nl:250,nh:1000,ol:500,oh:800,hair:0},
-   {n:"Testosterona livre",v:7.2,u:"pg/mL",nl:8.7,nh:25,ol:15,oh:25,hair:0},
-   {n:"Vitamina A",v:55,u:"µg/dL",nl:30,nh:80,ol:40,oh:65,hair:0},
-   {n:"Magnésio",v:1.8,u:"mg/dL",nl:1.6,nh:2.6,ol:2.0,oh:2.4,hair:0},
-   {n:"Insulina jejum",v:12,u:"µUI/mL",nl:2,nh:25,ol:2,oh:8,hair:0}
-  ],
-  impactos:[
-   ["Ferritina 24 (ótima >70)","reserva de ferro baixa é gatilho clássico de <b>eflúvio telógeno</b> — queda difusa."],
-   ["Vitamina D 23 (ótima >50)","deficiência associada a <b>miniaturização</b> e pior resposta ao tratamento capilar."],
-   ["Zinco 67 (ótima >90)","cofator da queratina; déficit fragiliza o fio e aumenta a queda."],
-   ["TSH 3.6 (ótima <2)","tireoide no limite alto pode manter a queda mesmo com nutrientes corrigidos."],
-   ["Testosterona livre 7.2 (ótima >15)","baixa vitalidade e energia; relevante no quadro geral, acompanhar eixo."]
-  ],
-  proto:[
-   "Ferro/ferritina: repor via oral ou soroterapia conforme tolerância; reavaliar em 60–90 dias.",
-   "Vitamina D: reposição até faixa 50–70 ng/mL com controle de cálcio.",
-   "Zinco + cofatores (B12, magnésio): incluir no protocolo ortomolecular / soroterapia.",
-   "Tireoide: investigar TSH limítrofe antes de atribuir a queda só a nutrientes.",
-   "Soroterapia capilar: combinar reposição de ferro, zinco e complexo B no mesmo protocolo."
-  ]},
- bom:{nome:"Marcos Vieira",ini:"MV",id:"2025-0512",idadeSexo:"34 anos · M",
-  ctx:"Check-up / manutenção capilar · couro saudável · sem queixa relevante",
-  dados:[
-   {n:"Ferritina",v:118,u:"ng/mL",nl:30,nh:400,ol:70,oh:150,hair:1},
-   {n:"Ferro sérico",v:122,u:"µg/dL",nl:65,nh:175,ol:90,oh:150,hair:1},
-   {n:"Sat. transferrina",v:34,u:"%",nl:20,nh:50,ol:30,oh:40,hair:1},
-   {n:"Vitamina D (25-OH)",v:62,u:"ng/mL",nl:30,nh:100,ol:50,oh:80,hair:1},
-   {n:"Zinco",v:104,u:"µg/dL",nl:70,nh:120,ol:90,oh:120,hair:1},
-   {n:"Vitamina B12",v:660,u:"pg/mL",nl:200,nh:900,ol:500,oh:900,hair:1},
-   {n:"Ácido fólico",v:13,u:"ng/mL",nl:3,nh:17,ol:10,oh:17,hair:0},
-   {n:"TSH",v:1.6,u:"µUI/mL",nl:0.4,nh:4.0,ol:1.0,oh:2.0,hair:1},
-   {n:"T4 livre",v:1.35,u:"ng/dL",nl:0.9,nh:1.7,ol:1.2,oh:1.5,hair:1},
-   {n:"Testosterona total",v:680,u:"ng/dL",nl:250,nh:1000,ol:500,oh:800,hair:0},
-   {n:"Testosterona livre",v:19,u:"pg/mL",nl:8.7,nh:25,ol:15,oh:25,hair:0},
-   {n:"Vitamina A",v:52,u:"µg/dL",nl:30,nh:80,ol:40,oh:65,hair:0},
-   {n:"Magnésio",v:2.2,u:"mg/dL",nl:1.6,nh:2.6,ol:2.0,oh:2.4,hair:0},
-   {n:"Insulina jejum",v:5,u:"µUI/mL",nl:2,nh:25,ol:2,oh:8,hair:0}
-  ],
-  impactos:[
-   ["Sem déficits relevantes","todos os marcadores em faixa ótima — baixo risco nutricional para queda."],
-   ["Ferro e vitamina D ótimos","reservas adequadas: boa base para transplante e manutenção do resultado."],
-   ["Eixo hormonal equilibrado","testosterona em faixa ótima favorece densidade e força do fio."]
-  ],
-  proto:[
-   "Manter suplementação/alimentação atuais; reavaliar em 6 meses.",
-   "Acompanhamento capilar de rotina (tricoscopia semestral).",
-   "Sem necessidade de reposição agressiva no momento — foco em manutenção."
-  ]}
+function nextSrc(img){var l=(img.dataset.srcs||'').split(',');var i=(+img.dataset.i||0)+1;if(i<l.length){img.dataset.i=i;img.src=l[i].trim();}else{img.style.display='none';var fb=img.dataset.fb&&document.getElementById(img.dataset.fb);if(fb)fb.style.display='block';}}
+
+/* ---------- REFERÊNCIAS (com ajuste por sexo) ---------- */
+const REF=[
+ {n:"Ferritina",u:"ng/mL",hair:1,m:[30,400,70,150],f:[15,150,50,120]},
+ {n:"Ferro sérico",u:"µg/dL",hair:1,m:[65,175,90,150]},
+ {n:"Sat. transferrina",u:"%",hair:1,m:[20,50,30,40]},
+ {n:"Hemoglobina",u:"g/dL",hair:1,m:[13.5,17.5,14.5,16.5],f:[12,16,13,15]},
+ {n:"Vitamina D (25-OH)",u:"ng/mL",hair:1,m:[30,100,50,80]},
+ {n:"Zinco",u:"µg/dL",hair:1,m:[70,120,90,120]},
+ {n:"Vitamina B12",u:"pg/mL",hair:1,m:[200,900,500,900]},
+ {n:"Ácido fólico",u:"ng/mL",hair:0,m:[3,17,10,17]},
+ {n:"TSH",u:"µUI/mL",hair:1,m:[0.4,4.0,1.0,2.0]},
+ {n:"T4 livre",u:"ng/dL",hair:1,m:[0.9,1.7,1.2,1.5]},
+ {n:"Testosterona total",u:"ng/dL",hair:0,m:[250,1000,500,800],f:[15,70,35,60]},
+ {n:"Testosterona livre",u:"pg/mL",hair:0,m:[8.7,25,15,25],f:[0.3,3.2,1.5,3.0]},
+ {n:"SHBG",u:"nmol/L",hair:0,m:[18,54,25,45],f:[40,120,50,90]},
+ {n:"DHEA-S",u:"µg/dL",hair:0,m:[100,500,250,450],f:[35,430,150,350]},
+ {n:"Magnésio",u:"mg/dL",hair:0,m:[1.6,2.6,2.0,2.4]},
+ {n:"Insulina jejum",u:"µUI/mL",hair:0,m:[2,25,2,8]}
+];
+/* perfis de valores (sexo-dependentes onde necessário) */
+const TPL={
+ ruim:{Ferritina:24,"Ferro sérico":68,"Sat. transferrina":18,Hemoglobina:{m:13.2,f:11.4},"Vitamina D (25-OH)":23,Zinco:67,"Vitamina B12":320,"Ácido fólico":6.5,TSH:3.6,"T4 livre":1.0,"Testosterona total":{m:310,f:16},"Testosterona livre":{m:7.2,f:0.8},SHBG:{m:62,f:135},"DHEA-S":{m:90,f:30},"Magnésio":1.8,"Insulina jejum":12},
+ medio:{Ferritina:55,"Ferro sérico":95,"Sat. transferrina":26,Hemoglobina:{m:14,f:12.4},"Vitamina D (25-OH)":38,Zinco:82,"Vitamina B12":460,"Ácido fólico":9,TSH:2.6,"T4 livre":1.15,"Testosterona total":{m:430,f:30},"Testosterona livre":{m:12,f:1.4},SHBG:{m:50,f:95},"DHEA-S":{m:210,f:130},"Magnésio":1.95,"Insulina jejum":9},
+ bom:{Ferritina:{m:118,f:80},"Ferro sérico":122,"Sat. transferrina":34,Hemoglobina:{m:15.4,f:13.7},"Vitamina D (25-OH)":62,Zinco:104,"Vitamina B12":660,"Ácido fólico":13,TSH:1.6,"T4 livre":1.35,"Testosterona total":{m:680,f:48},"Testosterona livre":{m:19,f:2.4},SHBG:{m:38,f:70},"DHEA-S":{m:350,f:280},"Magnésio":2.2,"Insulina jejum":5}
 };
-let DADOS=PAC.ruim.dados, IMPACTOS=PAC.ruim.impactos, PROTO=PAC.ruim.proto, curPac=PAC.ruim;
-function nextSrc(img){var l=(img.dataset.srcs||'').split(',');var i=(+img.dataset.i||0)+1;if(i<l.length){img.dataset.i=i;img.src=l[i].trim();}else{img.style.display='none';var fb=img.dataset.fb&&document.getElementById(img.dataset.fb);if(fb)fb.style.display='flex';}}
+function rng(ref,sexo){return (sexo==='F'&&ref.f)?ref.f:ref.m;}
+function val(tplv,sexo){return (tplv&&typeof tplv==='object')?(sexo==='F'?tplv.f:tplv.m):tplv;}
+function buildDados(p){const t=TPL[p.perfil];return REF.map(ref=>{const r=rng(ref,p.sexo);return {n:ref.n,u:ref.u,hair:ref.hair,v:val(t[ref.n],p.sexo),nl:r[0],nh:r[1],ol:r[2],oh:r[3]};});}
+
+/* ---------- PACIENTES (fictícios) ---------- */
+const MES=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+const PAC=[
+ {nome:"Carlos Andrade",cpf:"123.456.789-00",sexo:"M",idade:38,peso:82,mes:6,valor:2500,perfil:"ruim",ctx:"Queda capilar difusa há ~6 meses + cansaço · Norwood IV"},
+ {nome:"Mariana Souza",cpf:"234.567.890-11",sexo:"F",idade:34,peso:63,mes:6,valor:1800,perfil:"ruim",ctx:"Afinamento difuso + queda no pós-parto"},
+ {nome:"Rafael Lima",cpf:"345.678.901-22",sexo:"M",idade:41,peso:88,mes:6,valor:3200,perfil:"medio",ctx:"Entradas frontais · acompanhamento pós-transplante"},
+ {nome:"João Pereira",cpf:"456.789.012-33",sexo:"M",idade:29,peso:75,mes:5,valor:2500,perfil:"bom",ctx:"Manutenção · couro saudável"},
+ {nome:"Ana Beatriz",cpf:"567.890.123-44",sexo:"F",idade:45,peso:70,mes:5,valor:2100,perfil:"medio",ctx:"Eflúvio + alteração tireoidiana em investigação"},
+ {nome:"Pedro Gomes",cpf:"678.901.234-55",sexo:"M",idade:52,peso:91,mes:5,valor:4000,perfil:"ruim",ctx:"Calvície avançada + síndrome metabólica"},
+ {nome:"Lucas Martins",cpf:"789.012.345-66",sexo:"M",idade:33,peso:79,mes:4,valor:2500,perfil:"medio",ctx:"Queda recente · estresse"},
+ {nome:"Fernanda Dias",cpf:"890.123.456-77",sexo:"F",idade:39,peso:66,mes:4,valor:1800,perfil:"bom",ctx:"Manutenção ortomolecular"},
+ {nome:"Bruno Alves",cpf:"901.234.567-88",sexo:"M",idade:47,peso:95,mes:3,valor:3500,perfil:"medio",ctx:"Rarefação no vértex"},
+ {nome:"Tiago Rocha",cpf:"012.345.678-99",sexo:"M",idade:36,peso:80,mes:3,valor:2500,perfil:"ruim",ctx:"Ferritina baixa + eflúvio telógeno"},
+ {nome:"Camila Nunes",cpf:"112.233.445-56",sexo:"F",idade:31,peso:58,mes:2,valor:1800,perfil:"medio",ctx:"Afinamento + dieta restritiva"},
+ {nome:"Eduardo Ramos",cpf:"223.344.556-67",sexo:"M",idade:44,peso:86,mes:2,valor:3000,perfil:"bom",ctx:"Pós-transplante 12 meses"},
+ {nome:"Marcos Vieira",cpf:"334.455.667-78",sexo:"M",idade:34,peso:78,mes:1,valor:2500,perfil:"bom",ctx:"Check-up capilar de rotina"},
+ {nome:"Roberto Pinto",cpf:"445.566.778-89",sexo:"M",idade:49,peso:90,mes:1,valor:4200,perfil:"ruim",ctx:"Calvície + déficits múltiplos"}
+];
+const META=10000;
+
+/* ---------- núcleo de classificação ---------- */
 function classify(d){if(d.v<d.nl||d.v>d.nh)return{k:"red",t:(d.v<d.nl?"Déficit":"Excesso")};if(d.v<d.ol||d.v>d.oh)return{k:"amber",t:"Subótimo"};return{k:"ok",t:"Ótimo"};}
 function pctOtimo(d){const mid=(d.ol+d.oh)/2;return Math.max(0,Math.min(140,Math.round(d.v/mid*100)));}
 function scaleHtml(d){const lo=Math.min(d.nl,d.v),hi=Math.max(d.nh,d.v),span=hi-lo||1;const ox=(d.ol-lo)/span*100,ow=(d.oh-d.ol)/span*100,mx=(d.v-lo)/span*100;return `<div class="scale"><div class="opt" style="left:${ox}%;width:${ow}%"></div><div class="mk" style="left:${mx}%"></div></div>`;}
-let masked=false;
-function setNome(){document.getElementById('pName').textContent=masked?("Paciente #"+curPac.id+" · "+curPac.idadeSexo):(curPac.nome+" · "+curPac.idadeSexo);document.getElementById('pAv').textContent=masked?"##":curPac.ini;}
-function toggleMask(){masked=!masked;setNome();document.getElementById('maskBtn').textContent=masked?"🔓 Mostrar identificação":"🔒 Ocultar identificação";}
-function enviarWhats(){const msg="Olá! Aqui é da Clínica Capelli. Preparei o resumo da sua avaliação capilar e laboratorial e montei um plano personalizado pra você. Posso te explicar agora?";window.open("https://wa.me/?text="+encodeURIComponent(msg),"_blank");}
-let chart;
-function carregarExemplo(tipo){
-  tipo=tipo||'ruim';curPac=PAC[tipo];DADOS=curPac.dados;IMPACTOS=curPac.impactos;PROTO=curPac.proto;
-  document.getElementById('result').classList.remove('hidden');
-  setNome();document.getElementById('pCtx').textContent=curPac.ctx;
+function fmtBRL(v){return 'R$ '+v.toLocaleString('pt-BR');}
+
+/* ---------- VIEWS ---------- */
+function showView(v){
+  document.getElementById('home').classList.toggle('hidden',v!=='home');
+  document.getElementById('analise').classList.toggle('hidden',v!=='analise');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ---------- HOME ---------- */
+let chartMes,filtroMes=0;
+function renderHome(){
+  const ano=PAC.length, mesAtual=6;
+  const doMes=PAC.filter(p=>p.mes===mesAtual);
+  const fat=doMes.reduce((s,p)=>s+p.valor,0);
+  document.getElementById('hPac').textContent=ano;
+  document.getElementById('hMes').textContent=doMes.length;
+  document.getElementById('hFat').textContent=fmtBRL(fat);
+  document.getElementById('hTicket').textContent=fmtBRL(Math.round(PAC.reduce((s,p)=>s+p.valor,0)/PAC.length));
+  const pct=Math.min(100,Math.round(fat/META*100));
+  document.getElementById('metaReal').textContent=fmtBRL(fat);
+  document.getElementById('metaBar').style.width=pct+'%';
+  document.getElementById('metaPct').textContent=pct+'% da meta';
+  document.getElementById('metaVal').textContent=fmtBRL(META);
+  // chart mensal
+  const counts=[1,2,3,4,5,6].map(m=>PAC.filter(p=>p.mes===m).length);
+  const labels=[1,2,3,4,5,6].map(m=>MES[m-1]);
+  if(chartMes)chartMes.destroy();
+  chartMes=new Chart(document.getElementById('chartMes'),{type:'bar',
+    data:{labels,datasets:[{data:counts,backgroundColor:'#141414',hoverBackgroundColor:'#b8902f',borderRadius:6}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0},grid:{color:'#efece6'}},x:{grid:{display:false}}},
+      onClick:(e,el)=>{if(el.length){filtroMes=el[0].index+1;renderLista();}}}
+  });
+  renderLista();
+}
+function renderLista(){
+  const q=(document.getElementById('busca').value||'').toLowerCase();
+  let arr=PAC.map((p,i)=>({p,i}));
+  if(filtroMes)arr=arr.filter(x=>x.p.mes===filtroMes);
+  if(q)arr=arr.filter(x=>x.p.nome.toLowerCase().includes(q));
+  document.getElementById('filtroMes').innerHTML=filtroMes?`Filtrando por <b>${MES[filtroMes-1]}</b> · <span style="cursor:pointer;color:var(--blue)" onclick="filtroMes=0;renderLista()">limpar filtro</span>`:'';
+  const tb=document.getElementById('listaPac');
+  tb.innerHTML=arr.map(({p,i})=>{
+    const dd=buildDados(p),def=dd.filter(d=>classify(d).k==='red').length;
+    const st=def>3?'<span class="chip red">Vários déficits</span>':def>0?'<span class="chip amber">'+def+' déficit(s)</span>':'<span class="chip ok">Equilibrado</span>';
+    const sx=p.sexo==='F'?'<span class="chip sexf">F</span>':'<span class="chip sex">M</span>';
+    return `<tr class="clk" onclick="abrirPaciente(${i})"><td><b>${p.nome}</b></td><td>${sx}</td><td>${p.idade}</td><td>${MES[p.mes-1]}</td><td>${st}</td><td>${fmtBRL(p.valor)}</td></tr>`;
+  }).join("")||'<tr><td colspan="6" style="color:var(--muted);padding:18px">Nenhum paciente encontrado.</td></tr>';
+}
+function uploadFlow(){
+  const nomes=PAC.map(p=>p.nome).join(", ");
+  const ex=PAC[Math.floor(Math.random()*PAC.length)];
+  document.getElementById('upMsg').innerHTML=
+   `<div class="dupmsg warn">📎 Exame recebido. A IA leu o nome <b>“${ex.nome}”</b> e encontrou um paciente com mesmo nome.<br>
+    CPF do arquivo: <b>${ex.cpf}</b> — confere com o cadastro → <b>sem duplicidade</b>.<br>
+    <div class="row"><button class="btn primary" onclick="abrirPacienteByName('${ex.nome}')">Atualizar ${ex.nome.split(' ')[0]}</button><button class="btn ghost" onclick="document.getElementById('upMsg').innerHTML='<div class=\\'dupmsg ok\\'>✓ Novo paciente criado (aguardando preenchimento de CPF, sexo, idade e peso).</div>'">Criar novo</button></div></div>`;
+}
+function abrirPacienteByName(n){const i=PAC.findIndex(p=>p.nome===n);if(i>=0)abrirPaciente(i);}
+
+/* ---------- ANÁLISE ---------- */
+let DADOS=[],IMPACTOS=[],PROTO=[],curPac=null,masked=false;
+function abrirPaciente(i){
+  curPac=PAC[i];DADOS=buildDados(curPac);montaNarrativa();
+  showView('analise');
+  setNome();
+  document.getElementById('pCtx').textContent=curPac.ctx;
+  document.getElementById('pBio').innerHTML=`${curPac.sexo==='F'?'Feminino':'Masculino'} · ${curPac.idade} anos · ${curPac.peso} kg · 16 biomarcadores (faixas ajustadas ao sexo)`;
   let def=0,at=0,ok=0,imp=0;const tb=document.getElementById('tbody');tb.innerHTML="";
   DADOS.forEach(d=>{const c=classify(d);if(c.k==="red")def++;else if(c.k==="amber")at++;else ok++;if(d.hair&&c.k!=="ok")imp++;
     const ic=c.k==='ok'?'<span style="color:var(--ok)">✓</span>':c.k==='amber'?'<span style="color:var(--amber)">–</span>':(d.v<d.nl?'<span style="color:var(--red)">↓</span>':'<span style="color:var(--red)">↑</span>');const vc=c.k==='red'?'var(--red)':c.k==='amber'?'var(--amber)':'var(--ink)';
-    tb.insertAdjacentHTML('beforeend',`<tr onclick="selMarcador('${d.n}')" style="cursor:pointer"><td style="text-align:center;font-weight:700">${ic}</td><td>${d.n}</td><td class="val" style="color:${vc}">${d.v} <small style="color:var(--muted)">${d.u}</small></td><td>${miniCurve(d)}</td><td>${d.ol}–${d.oh}</td><td><span class="chip ${c.k}">${c.t}</span></td></tr>`);});
+    tb.insertAdjacentHTML('beforeend',`<tr class="clk" onclick="selMarcador('${d.n}')"><td style="text-align:center;font-weight:700">${ic}</td><td>${d.n}</td><td class="val" style="color:${vc}">${d.v} <small style="color:var(--muted)">${d.u}</small></td><td>${miniCurve(d)}</td><td>${d.ol}–${d.oh}</td><td><span class="chip ${c.k}">${c.t}</span></td></tr>`);});
   document.getElementById('kTot').textContent=DADOS.length;document.getElementById('kDef').textContent=def;document.getElementById('kAt').textContent=at;document.getElementById('kOk').textContent=ok;
   document.getElementById('kImp').textContent=imp;document.getElementById('gauge').innerHTML=gaugeSvg(Math.round((ok+at*0.5)/DADOS.length*100));
   document.getElementById('impact').innerHTML=IMPACTOS.map(x=>`<li><b>${x[0]}:</b> ${x[1]}</li>`).join("");
   document.getElementById('proto').innerHTML=PROTO.map(x=>`<li>${x}</li>`).join("");
-  const ruim=(tipo==='ruim');
+  document.getElementById('curvaSel').innerHTML=DADOS.map(d=>`<option>${d.n}</option>`).join("");
+  const pri=DADOS.filter(d=>classify(d).k!=='ok').sort((a,b)=>pctOtimo(a)-pctOtimo(b))[0];
+  selMarcador((pri||DADOS[0]).n,true);
   renderPrioridades();
-  renderBody();baInit(ruim);
-  document.getElementById('result').scrollIntoView({behavior:'smooth'});
 }
-async function analisarAoVivo(){
-  const out=document.getElementById('liveOut');
-  if(document.getElementById('result').classList.contains('hidden'))carregarExemplo('ruim');
-  const prompt=window.PROMPT_AGENTE+"\n\nDADOS DO PACIENTE (JSON):\n"+JSON.stringify(DADOS)+"\n\nPaciente: "+curPac.idadeSexo+". "+curPac.ctx;
-  if(window.cowork&&window.cowork.askClaude){
-    out.innerHTML='<span class="spinner"></span>Analisando exames com Claude...';
-    try{const r=await window.cowork.askClaude(prompt,[DADOS]);const txt=typeof r==="string"?r:(r.text||r.content||JSON.stringify(r));out.textContent=txt;}
-    catch(e){out.textContent="Não foi possível chamar o Claude neste ambiente. Use o modo simulado.\n("+e+")";}
-  }else{
-    try{await navigator.clipboard.writeText(prompt);out.innerHTML="Arquivo aberto fora do app Claude (sem IA ao vivo).<br><b>Prompt completo + dados copiados para a área de transferência.</b><br>Cole no Claude para gerar a leitura clínica.";}
-    catch(e){out.textContent="Abra dentro do app Claude para análise ao vivo, ou use o modo simulado.";}
-  }
+function setNome(){if(!curPac)return;document.getElementById('pName').textContent=masked?("Paciente #"+curPac.cpf.slice(-5)+" · "+(curPac.sexo==='F'?'F':'M')):(curPac.nome+" · "+(curPac.sexo==='F'?'F':'M'));document.getElementById('pAv').textContent=masked?"##":curPac.nome.split(' ').map(s=>s[0]).slice(0,2).join('');}
+function toggleMask(){masked=!masked;setNome();document.getElementById('maskBtn').textContent=masked?"🔓 Mostrar identificação":"🔒 Ocultar identificação";}
+function enviarWhats(){const msg="Olá! Aqui é da Clínica Capelli. Preparei o resumo da sua avaliação capilar e laboratorial e montei um plano personalizado pra você. Posso te explicar agora?";window.open("https://wa.me/?text="+encodeURIComponent(msg),"_blank");}
+function montaNarrativa(){
+  const probs=DADOS.filter(d=>classify(d).k!=='ok').sort((a,b)=>pctOtimo(a)-pctOtimo(b));
+  if(!probs.length){IMPACTOS=[["Sem déficits relevantes","todos os marcadores em faixa ótima — baixo risco nutricional para queda."],["Boa base","reservas adequadas para transplante e manutenção do resultado."]];PROTO=["Manter conduta atual; reavaliar em 6 meses.","Acompanhamento capilar de rotina (tricoscopia semestral)."];return;}
+  const TXT={"Ferritina":"reserva de ferro baixa é gatilho de <b>eflúvio telógeno</b>.","Vitamina D (25-OH)":"deficiência associada a <b>miniaturização</b> e pior resposta ao tratamento.","Zinco":"cofator da queratina; déficit fragiliza o fio.","TSH":"tireoide fora do ótimo mantém a queda mesmo com nutrientes corrigidos.","Testosterona livre":"baixa vitalidade e energia; acompanhar eixo.","Sat. transferrina":"transporte de ferro baixo, reforça o quadro de eflúvio.","Hemoglobina":"anemia compromete oxigenação do folículo.","Vitamina B12":"déficit afeta a renovação celular do bulbo.","Ferro sérico":"ferro circulante baixo, repor com acompanhamento."};
+  IMPACTOS=probs.slice(0,5).map(d=>[`${d.n} ${d.v}${d.u} (ót. ${d.ol}–${d.oh})`, TXT[d.n]||"fora da faixa ótima; relevante para o quadro capilar."]);
+  PROTO=["Repor os déficits prioritários (ferro/ferritina, vitamina D, zinco) via oral ou soroterapia.","Corrigir tireoide antes de atribuir a queda só a nutrientes.","Soroterapia capilar combinando os principais cofatores.","Reavaliar em 60–90 dias com novo exame e tricoscopia."];
 }
-const dz=document.getElementById('dz');
-['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('drag')}));
-['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('drag')}));
-dz.addEventListener('drop',e=>carregarExemplo('ruim'));dz.addEventListener('click',e=>carregarExemplo('ruim'));
-
-const ORGANS=[
- {name:"Tireoide",sub:"Regula metabolismo e ciclo do fio",x:50,y:18,cx:74,cy:13,mk:["TSH","T4 livre"],note:"TSH no limite pode manter a queda mesmo com nutrientes corrigidos."},
- {name:"Fígado",sub:"Metaboliza hormônios e ativa a vitamina D",x:57,y:28,cx:83,cy:25,mk:["Testosterona total","Testosterona livre","Vitamina D (25-OH)"],note:"Metaboliza a testosterona, produz SHBG e ativa a vitamina D (25-OH). Eixo central do quadro hormonal."},
- {name:"Pele",sub:"Síntese de vitamina D",x:25,y:30,cx:12,cy:27,mk:["Vitamina D (25-OH)","Vitamina A"],note:"A pele sintetiza vitamina D pela luz solar; impacta diretamente o couro cabeludo."},
- {name:"Estômago / Intestino",sub:"Absorção de minerais e vitaminas",x:45,y:36,cx:18,cy:43,mk:["Zinco","Vitamina B12","Ácido fólico","Magnésio","Insulina jejum"],note:"Absorção de zinco, B12 e magnésio — essenciais à síntese de queratina."},
- {name:"Medula óssea",sub:"Reservas de ferro e sangue",x:50,y:45,cx:80,cy:47,mk:["Ferritina","Ferro sérico","Sat. transferrina"],note:"Reservas de ferro: gatilho nº1 de eflúvio telógeno (queda difusa)."},
- {name:"Eixo hormonal",sub:"Vitalidade e densidade do fio",x:50,y:51,cx:26,cy:56,mk:["Testosterona total","Testosterona livre"],note:"Energia, libido e força do fio. Acompanhar antes de qualquer reposição."}
-];
-function findD(n){return DADOS.find(d=>d.n===n);}
-function worst(mk){let r="ok";mk.forEach(n=>{const d=findD(n);if(!d)return;const k=classify(d).k;if(k==="red")r="red";else if(k==="amber"&&r!=="red")r="amber";});return r;}
-let curOrg=0,orgTimer=null;
-const BODYPTS=[
- {mk:'TSH',x:52,y:17,lx:74,ly:13},
- {mk:'Vitamina D (25-OH)',x:37,y:30,lx:17,ly:28},
- {mk:'Testosterona total',x:60,y:39,lx:85,ly:39},
- {mk:'Vitamina B12',x:43,y:43,lx:18,ly:46},
- {mk:'Ferritina',x:62,y:47,lx:85,ly:52},
- {mk:'Testosterona livre',x:50,y:58,lx:25,ly:64}
-];
-function renderBody(){/* a imagem do corpo já traz as etiquetas embutidas */}
 function renderPrioridades(){
   const probs=DADOS.filter(d=>classify(d).k!=='ok').sort((a,b)=>pctOtimo(a)-pctOtimo(b)).slice(0,6);
   const el=document.getElementById('prioridades');
-  if(!probs.length){el.innerHTML='<div style="padding:16px;color:var(--ok);font-weight:600">✓ Todos os marcadores em faixa ótima — sem prioridades.</div>';return;}
+  if(!probs.length){el.innerHTML='<div style="padding:16px;color:var(--ok);font-weight:600">✓ Todos os marcadores em faixa ótima.</div>';return;}
   el.innerHTML=probs.map(d=>{
     const pad=(d.oh-d.ol)*0.8||1,mn=d.ol-pad,mx=d.oh+pad,span=mx-mn;
     const gl=(d.ol-mn)/span*100,gr=(d.oh-mn)/span*100,mk=Math.max(2,Math.min(98,(d.v-mn)/span*100));
     const dotc=classify(d).k==='red'?'#c0392b':'#b9770e';
     return `<div class="prow"><span class="pnm">${d.n}</span><span class="pvl">${d.v}<small style="font-weight:500;color:var(--muted)"> ${d.u}</small></span><span class="pend">${d.ol}</span><div class="pbar"><div class="zred" style="left:0;width:${gl}%"></div><div class="zgrn" style="left:${gl}%;width:${gr-gl}%"></div><div class="zyel" style="left:${gr}%;right:0"></div><div class="pdot" style="left:${mk}%;background:${dotc}"></div></div><span class="pend">${d.oh}</span></div>`;
-  }).join("")+`<div class="plegend"><span><i style="background:#f3c5bf"></i>Abaixo da faixa</span><span><i style="background:#bfe3c8"></i>Faixa ótima</span><span><i style="background:#f3e3b0"></i>Acima da faixa</span></div>`;
+  }).join("")+`<div class="plegend"><span><i style="background:#f3c5bf"></i>Abaixo</span><span><i style="background:#bfe3c8"></i>Faixa ótima</span><span><i style="background:#f3e3b0"></i>Acima</span></div>`;
 }
-function gaugeSvg(pct){
-  const r=22,c=2*Math.PI*r,off=c*(1-Math.max(0,Math.min(100,pct))/100);
-  const col=pct>=70?'#1f8f5f':pct>=45?'#e0a93b':'#d24b3e';
-  return `<svg viewBox="0 0 54 54" width="54" height="54"><circle cx="27" cy="27" r="${r}" fill="none" stroke="#ece9e3" stroke-width="6"/><circle cx="27" cy="27" r="${r}" fill="none" stroke="${col}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 27 27)"/><text x="27" y="31" text-anchor="middle" font-size="14" font-weight="800" fill="${col}">${pct}%</text></svg>`;
-}
-function miniCurve(d){
-  const W=92,base=24,amp=18;
-  const ol=d.ol,oh=d.oh,nl=d.nl,nh=d.nh,mn=ol-(oh-ol)*1.6,mx=oh+(oh-ol)*1.6,span=(mx-mn)||1;
-  const X=v=>Math.max(0,Math.min(W,(v-mn)/span*W));
-  const cx=X((ol+oh)/2),sig=Math.max(8,(X(oh)-X(ol))/2.2);
-  const z=(a,b,c)=>`<rect x="${a}" y="2" width="${Math.max(0,b-a)}" height="${base-2}" fill="${c}"/>`;
-  const zones=z(0,X(nl),'#fae6e2')+z(X(nl),X(ol),'#fbf1dd')+z(X(ol),X(oh),'#e7eefb')+z(X(oh),X(nh),'#fbf1dd')+z(X(nh),W,'#fae6e2');
-  let p='';for(let x=0;x<=W;x+=6){const y=base-amp*Math.exp(-((x-cx)*(x-cx))/(2*sig*sig));p+=(x?'L':'M')+x+' '+y.toFixed(1)+' ';}
-  const bell=`<path d="${p}L${W} ${base} L0 ${base} Z" fill="rgba(120,116,108,.16)" stroke="#bdb9b0" stroke-width="1"/>`;
-  const k=classify(d).k,col=k==='ok'?'#2f6fed':k==='amber'?'#e0a93b':'#d24b3e',px=X(d.v);
-  const mk=`<line x1="${px}" y1="3" x2="${px}" y2="${base}" stroke="${col}" stroke-width="2"/><circle cx="${px}" cy="4" r="3" fill="${col}"/>`;
-  return `<svg viewBox="0 0 ${W} ${base+5}" width="92" height="29" style="display:block">${zones}${bell}${mk}</svg>`;
-}
-function curveSvg(d){
-  const W=620,base=170,amp=120,H=base+34;
-  const ol=d.ol,oh=d.oh,nl=d.nl,nh=d.nh,mn=ol-(oh-ol)*1.6,mx=oh+(oh-ol)*1.6,span=(mx-mn)||1;
-  const X=v=>Math.max(0,Math.min(W,(v-mn)/span*W));
-  const cx=X((ol+oh)/2),sig=Math.max(34,(X(oh)-X(ol))/2.2);
-  const z=(a,b,c)=>`<rect x="${a}" y="12" width="${Math.max(0,b-a)}" height="${base-12}" fill="${c}"/>`;
-  const zones=z(0,X(nl),'#f7d9d3')+z(X(nl),X(ol),'#f6e6c2')+z(X(ol),X(oh),'#d8e6fb')+z(X(oh),X(nh),'#f6e6c2')+z(X(nh),W,'#f7d9d3');
-  let p='';for(let x=0;x<=W;x+=8){const y=base-amp*Math.exp(-((x-cx)*(x-cx))/(2*sig*sig));p+=(x?'L':'M')+x+' '+y.toFixed(1)+' ';}
-  const bell=`<path d="${p}L${W} ${base} L0 ${base} Z" fill="rgba(120,116,108,.22)" stroke="#b3afa6" stroke-width="1.5"/>`;
-  const c=classify(d),col=c.k==='ok'?'#2f6fed':c.k==='amber'?'#e0a93b':'#d24b3e',px=X(d.v);
-  const mark=`<line x1="${px}" y1="16" x2="${px}" y2="${base}" stroke="${col}" stroke-width="3"/><circle cx="${px}" cy="16" r="6" fill="${col}"/>`;
-  const tk=v=>`<line x1="${X(v)}" y1="${base}" x2="${X(v)}" y2="${base+5}" stroke="#bbb"/><text x="${X(v)}" y="${base+18}" font-size="10" fill="#86827b" text-anchor="middle">${v}</text>`;
-  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block">${zones}${bell}${tk(nl)}${tk(ol)}${tk(oh)}${tk(nh)}${mark}</svg>`;
-}
-function selMarcador(n){const s=document.getElementById('curvaSel');if(s)s.value=n;renderCurva(n);var el=document.getElementById('curva');if(el)el.scrollIntoView({behavior:'smooth',block:'center'});}
-function renderCurva(name){
-  const d=DADOS.find(x=>x.n===name)||DADOS[0];
-  document.getElementById('curva').innerHTML=curveSvg(d);
-  const c=classify(d),col=c.k==='ok'?'#2f6fed':c.k==='amber'?'#e0a93b':'#d24b3e';
-  const w=c.k==='ok'?'Ideal':c.k==='amber'?'Atenção':(d.v<d.nl?'Abaixo do ideal':'Acima do ideal');
-  document.getElementById('curvaCap').innerHTML=`<span style="color:${col}">${d.n}: ${d.v} ${d.u} — ${w}</span>`;
-}
-function focusOrgan(i){
-  curOrg=i;const o=ORGANS[i];
-  document.querySelectorAll('#stage .hot').forEach((h,j)=>h.classList.toggle('active',j===i));
-  document.querySelectorAll('#dotnav button').forEach((b,j)=>b.classList.toggle('on',j===i));
-  const rows=o.mk.map(findD).filter(Boolean).map(d=>{const c=classify(d);return `<div class="orgline"><span class="nm">${d.n}</span><span class="pv">${d.v}<small style="color:var(--muted);font-weight:500">${d.u}</small></span><span class="chip ${c.k}">${c.t}</span><span style="font-size:11px;color:var(--muted)">ót. ${d.ol}–${d.oh}</span></div>`;}).join("");
-  document.getElementById('organpanel').innerHTML=`<h3>${o.name}</h3><div class="sub">${o.sub}</div>${rows}<div class="orgnote">💡 ${o.note}</div>`;
-}
-function restartTimer(){clearInterval(orgTimer);orgTimer=setInterval(()=>focusOrgan((curOrg+1)%ORGANS.length),3000);}
+function gaugeSvg(pct){const r=22,c=2*Math.PI*r,off=c*(1-Math.max(0,Math.min(100,pct))/100);const col=pct>=70?'#1f8f5f':pct>=45?'#e0a93b':'#d24b3e';return `<svg viewBox="0 0 54 54" width="54" height="54"><circle cx="27" cy="27" r="${r}" fill="none" stroke="#ece9e3" stroke-width="6"/><circle cx="27" cy="27" r="${r}" fill="none" stroke="${col}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 27 27)"/><text x="27" y="31" text-anchor="middle" font-size="14" font-weight="800" fill="${col}">${pct}%</text></svg>`;}
+function miniCurve(d){const W=92,base=24,amp=18;const ol=d.ol,oh=d.oh,nl=d.nl,nh=d.nh,mn=ol-(oh-ol)*1.6,mx=oh+(oh-ol)*1.6,span=(mx-mn)||1;const X=v=>Math.max(0,Math.min(W,(v-mn)/span*W));const cx=X((ol+oh)/2),sig=Math.max(8,(X(oh)-X(ol))/2.2);const z=(a,b,c)=>`<rect x="${a}" y="2" width="${Math.max(0,b-a)}" height="${base-2}" fill="${c}"/>`;const zones=z(0,X(nl),'#fae6e2')+z(X(nl),X(ol),'#fbf1dd')+z(X(ol),X(oh),'#e7eefb')+z(X(oh),X(nh),'#fbf1dd')+z(X(nh),W,'#fae6e2');let p='';for(let x=0;x<=W;x+=6){const y=base-amp*Math.exp(-((x-cx)*(x-cx))/(2*sig*sig));p+=(x?'L':'M')+x+' '+y.toFixed(1)+' ';}const bell=`<path d="${p}L${W} ${base} L0 ${base} Z" fill="rgba(120,116,108,.16)" stroke="#bdb9b0" stroke-width="1"/>`;const k=classify(d).k,col=k==='ok'?'#2f6fed':k==='amber'?'#e0a93b':'#d24b3e',px=X(d.v);const mk=`<line x1="${px}" y1="3" x2="${px}" y2="${base}" stroke="${col}" stroke-width="2"/><circle cx="${px}" cy="4" r="3" fill="${col}"/>`;return `<svg viewBox="0 0 ${W} ${base+5}" width="92" height="29" style="display:block">${zones}${bell}${mk}</svg>`;}
+function curveSvg(d){const W=620,base=170,amp=120,H=base+34;const ol=d.ol,oh=d.oh,nl=d.nl,nh=d.nh,mn=ol-(oh-ol)*1.6,mx=oh+(oh-ol)*1.6,span=(mx-mn)||1;const X=v=>Math.max(0,Math.min(W,(v-mn)/span*W));const cx=X((ol+oh)/2),sig=Math.max(34,(X(oh)-X(ol))/2.2);const z=(a,b,c)=>`<rect x="${a}" y="12" width="${Math.max(0,b-a)}" height="${base-12}" fill="${c}"/>`;const zones=z(0,X(nl),'#f7d9d3')+z(X(nl),X(ol),'#f6e6c2')+z(X(ol),X(oh),'#d8e6fb')+z(X(oh),X(nh),'#f6e6c2')+z(X(nh),W,'#f7d9d3');let p='';for(let x=0;x<=W;x+=8){const y=base-amp*Math.exp(-((x-cx)*(x-cx))/(2*sig*sig));p+=(x?'L':'M')+x+' '+y.toFixed(1)+' ';}const bell=`<path d="${p}L${W} ${base} L0 ${base} Z" fill="rgba(120,116,108,.22)" stroke="#b3afa6" stroke-width="1.5"/>`;const c=classify(d),col=c.k==='ok'?'#2f6fed':c.k==='amber'?'#e0a93b':'#d24b3e',px=X(d.v);const mark=`<line x1="${px}" y1="16" x2="${px}" y2="${base}" stroke="${col}" stroke-width="3"/><circle cx="${px}" cy="16" r="6" fill="${col}"/>`;const tk=v=>`<line x1="${X(v)}" y1="${base}" x2="${X(v)}" y2="${base+5}" stroke="#bbb"/><text x="${X(v)}" y="${base+18}" font-size="10" fill="#86827b" text-anchor="middle">${v}</text>`;return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block">${zones}${bell}${tk(nl)}${tk(ol)}${tk(oh)}${tk(nh)}${mark}</svg>`;}
+function selMarcador(n,noScroll){const s=document.getElementById('curvaSel');if(s)s.value=n;renderCurva(n);if(!noScroll){var el=document.getElementById('curva');if(el)el.scrollIntoView({behavior:'smooth',block:'center'});}}
+function renderCurva(name){const d=DADOS.find(x=>x.n===name)||DADOS[0];if(!d)return;document.getElementById('curva').innerHTML=curveSvg(d);const c=classify(d),col=c.k==='ok'?'#2f6fed':c.k==='amber'?'#e0a93b':'#d24b3e';const w=c.k==='ok'?'Ideal':c.k==='amber'?'Atenção':(d.v<d.nl?'Abaixo do ideal':'Acima do ideal');document.getElementById('curvaCap').innerHTML=`<span style="color:${col}">${d.n}: ${d.v} ${d.u} — ${w}</span>`;}
+async function analisarAoVivo(){const out=document.getElementById('liveOut');if(!curPac)return;const prompt=window.PROMPT_AGENTE+"\n\nPaciente: "+(curPac.sexo==='F'?'feminino':'masculino')+", "+curPac.idade+" anos, "+curPac.peso+" kg. "+curPac.ctx+"\n\nDADOS (JSON):\n"+JSON.stringify(DADOS);if(window.cowork&&window.cowork.askClaude){out.innerHTML='Analisando exames com Claude...';try{const r=await window.cowork.askClaude(prompt,[DADOS]);out.textContent=typeof r==="string"?r:(r.text||r.content||JSON.stringify(r));}catch(e){out.textContent="Não foi possível chamar o Claude aqui. ("+e+")";}}else{try{await navigator.clipboard.writeText(prompt);out.innerHTML="Fora do app Claude (sem IA ao vivo). <b>Prompt + dados copiados.</b> Cole no Claude para gerar a leitura.";}catch(e){out.textContent="Abra no app Claude para análise ao vivo.";}}}
+function showAnnotated(){const T="#28e0c9";let field='';for(let i=0;i<120;i++){const x=10+Math.random()*380,y=14+Math.random()*242;if(x>270&&y<110&&Math.random()<0.75)continue;const len=6+Math.random()*9;field+=`<circle cx="${x}" cy="${y}" r="1.6" fill="#7c5436"/><line x1="${x}" y1="${y}" x2="${x+(Math.random()-.5)*6}" y2="${y-len}" stroke="#b98a5f" stroke-width="1.4" stroke-linecap="round"/>`;}function lbl(x,y,t,d){const w=t.length*6.0+12;return `<g style="opacity:0;animation:none"><rect x="${x}" y="${y-13}" width="${w}" height="18" rx="3" fill="#06302b" stroke="${T}" stroke-width="1"/><text x="${x+6}" y="${y}" fill="#9bf5e7" font-size="11" font-family="sans-serif">${t}</text></g>`.replace('opacity:0;animation:none','');}const svg=`<svg viewBox="0 0 400 270" preserveAspectRatio="xMidYMid slice"><rect width="400" height="270" fill="#241a14"/>${field}<rect x="40" y="150" width="84" height="84" fill="none" stroke="${T}" stroke-width="1.4" stroke-dasharray="5 4"/>${lbl(40,148,"Densidade 142 fios/cm²")}<line x1="190" y1="120" x2="214" y2="120" stroke="${T}" stroke-width="1.4"/>${lbl(150,112,"Calibre 0,04 mm")}<circle cx="150" cy="195" r="17" fill="none" stroke="#ffd34d" stroke-width="1.6"/>${lbl(170,210,"Miniaturização")}<circle cx="330" cy="60" r="26" fill="none" stroke="#ff7a6b" stroke-width="1.4" stroke-dasharray="4 3"/>${lbl(150,56,"Rarefação vértex 22%")}</svg>`;document.getElementById('annostage').innerHTML=svg;const MEAS=[["Densidade capilar","142 fios/cm²","red"],["Calibre médio do fio","0,04 mm","amber"],["Relação terminal/velus","3:1","amber"],["Rarefação no vértex","22%","red"]];document.getElementById('annopanel').innerHTML=`<h3>Medidas extraídas</h3><div class="sub">Laudo gerado pela IA a partir da imagem</div>`+MEAS.map(m=>`<div class="orgline"><span class="nm">${m[0]}</span><span class="pv">${m[1]}</span><span class="chip ${m[2]}">${m[2]==="red"?"Alterado":"Atenção"}</span></div>`).join("")+`<div class="orgnote">💡 Padrão compatível com alopecia androgenética + componente seborreico. Correlacionar com os déficits do laboratório.</div>`;}
 
-function hairMicro(thick){let f='';for(let i=0;i<13;i++){const x=14+Math.random()*92,y=22+Math.random()*78;f+=`<circle cx="${x}" cy="${y}" r="3" fill="#c79c78"/><line x1="${x}" y1="${y}" x2="${x+(Math.random()-.5)*9}" y2="${y-16}" stroke="#3d2417" stroke-width="${thick}" stroke-linecap="round"/>`;}return `<svg width="100" height="100" viewBox="0 0 120 110"><rect width="120" height="110" fill="#f3ddca"/>${f}</svg>`;}
-function dandruffMicro(){let fl='';for(let i=0;i<24;i++){const x=8+Math.random()*104,y=8+Math.random()*94,r=2+Math.random()*4;fl+=`<circle cx="${x}" cy="${y}" r="${r}" fill="#ffffff" opacity="0.88"/>`;}let h='';for(let i=0;i<6;i++){const x=18+Math.random()*84,y=20+Math.random()*70;h+=`<line x1="${x}" y1="${y}" x2="${x+3}" y2="${y-13}" stroke="#3d2417" stroke-width="2" stroke-linecap="round"/>`;}return `<svg width="100" height="100" viewBox="0 0 120 110"><rect width="120" height="110" fill="#e6c4a6"/>${h}${fl}</svg>`;}
+window.PROMPT_AGENTE=`Você é um agente de análise laboratorial de uma clínica de medicina ortomolecular e restauração capilar. Considere o SEXO, IDADE e PESO do paciente ao interpretar as faixas. Analise os exames pela FAIXA ÓTIMA (não só o normal), identifique déficits que impactam a saúde capilar e sugira direcionamentos como SUPORTE À DECISÃO. Não prescreva doses finais; sinalize o que exige revisão médica. Responda em PT-BR, estruturado.`;
 
-function scalp(n,color){let s='';for(let i=0;i<n;i++){const x=12+Math.random()*276,y=26+Math.random()*180,len=7+Math.random()*9,a=(Math.random()-.5)*0.7;s+=`<line x1="${x}" y1="${y}" x2="${x+Math.sin(a)*len}" y2="${y-len}" stroke="${color}" stroke-width="2.2" stroke-linecap="round"/>`;}return `<svg viewBox="0 0 300 236" preserveAspectRatio="xMidYMid slice"><rect width="300" height="236" fill="#efdfce"/><ellipse cx="150" cy="125" rx="140" ry="104" fill="#e7d0bd"/>${s}</svg>`;}
-function baInit(ruim){const antes=ruim?70:200;document.getElementById('baAfter').innerHTML=scalp(360,'#3b2316');document.getElementById('baBefore').innerHTML=scalp(antes,'#6b4a36');baMove(50);}
-function baMove(v){document.getElementById('baBefore').style.clipPath=`inset(0 ${100-v}% 0 0)`;document.getElementById('baHandle').style.left=v+'%';}
-
-function showAnnotated(){
-  const T="#28e0c9";
-  let field='';for(let i=0;i<120;i++){const x=10+Math.random()*380,y=14+Math.random()*242;if(x>270&&y<110&&Math.random()<0.75)continue;const len=6+Math.random()*9;field+=`<circle cx="${x}" cy="${y}" r="1.6" fill="#7c5436"/><line x1="${x}" y1="${y}" x2="${x+(Math.random()-.5)*6}" y2="${y-len}" stroke="#b98a5f" stroke-width="1.4" stroke-linecap="round"/>`;}
-  function lbl(x,y,t,d){const w=t.length*6.0+12;return `<g class="anno" style="animation-delay:${d}s"><rect x="${x}" y="${y-13}" width="${w}" height="18" rx="3" fill="#06302b" stroke="${T}" stroke-width="1"/><text x="${x+6}" y="${y}" fill="#9bf5e7" font-size="11" font-family="sans-serif">${t}</text></g>`;}
-  const svg=`<svg viewBox="0 0 400 270" preserveAspectRatio="xMidYMid slice"><rect width="400" height="270" fill="#241a14"/>${field}<g class="anno" style="animation-delay:.2s"><rect x="40" y="150" width="84" height="84" fill="none" stroke="${T}" stroke-width="1.4" stroke-dasharray="5 4"/></g>${lbl(40,148,"Densidade 142 fios/cm²",.4)}<g class="anno" style="animation-delay:.7s"><line x1="190" y1="120" x2="214" y2="120" stroke="${T}" stroke-width="1.4"/><line x1="190" y1="116" x2="190" y2="124" stroke="${T}" stroke-width="1.4"/><line x1="214" y1="116" x2="214" y2="124" stroke="${T}" stroke-width="1.4"/></g>${lbl(150,112,"Calibre 0,04 mm",.9)}<g class="anno" style="animation-delay:1.2s"><circle cx="150" cy="195" r="17" fill="none" stroke="#ffd34d" stroke-width="1.6"/><line x1="167" y1="195" x2="200" y2="205" stroke="#ffd34d" stroke-width="1.2"/></g>${lbl(202,209,"Miniaturização",1.35)}<g class="anno" style="animation-delay:1.7s"><circle cx="330" cy="60" r="26" fill="none" stroke="#ff7a6b" stroke-width="1.4" stroke-dasharray="4 3"/><line x1="250" y1="60" x2="304" y2="60" stroke="#ff7a6b" stroke-width="1.4"/></g>${lbl(150,56,"Rarefação vértex 22%",1.85)}<g class="anno" style="animation-delay:2.1s"><line x1="320" y1="250" x2="370" y2="250" stroke="#fff" stroke-width="1.4"/><line x1="320" y1="246" x2="320" y2="254" stroke="#fff" stroke-width="1.4"/><line x1="370" y1="246" x2="370" y2="254" stroke="#fff" stroke-width="1.4"/><text x="333" y="244" fill="#fff" font-size="10" font-family="sans-serif">1 mm</text></g></svg>`;
-  document.getElementById('annostage').innerHTML=svg;
-  const MEAS=[["Densidade capilar","142 fios/cm²","red","normal > 180"],["Calibre médio do fio","0,04 mm","amber","fino (normal > 0,06)"],["Relação terminal/velus","3:1","amber","normal > 4:1"],["Rarefação no vértex","22%","red","compatível com AAG"],["Descamação / caspa","Presente","amber","dermatite seborreica"]];
-  document.getElementById('annopanel').innerHTML=`<h3>Medidas extraídas</h3><div class="sub">Laudo gerado pela IA a partir da imagem</div>`+MEAS.map(m=>`<div class="orgline"><span class="nm">${m[0]}</span><span class="pv">${m[1]}</span><span class="chip ${m[2]}">${m[2]==="red"?"Alterado":"Atenção"}</span><span style="font-size:11px;color:var(--muted)">${m[3]}</span></div>`).join("")+`<div class="orgnote">💡 Padrão compatível com alopecia androgenética + componente seborreico. Correlacionar com ferritina e vitamina D baixas do laboratório.</div>`;
-}
-
-window.PROMPT_AGENTE=`Você é um agente de análise laboratorial de uma clínica de medicina ortomolecular e restauração capilar. Analise os exames considerando a FAIXA ÓTIMA (não apenas o intervalo laboratorial "normal"), identifique déficits que impactam a saúde capilar e sugira direcionamentos de protocolo de reposição como SUPORTE À DECISÃO. Não prescreva doses finais; sinalize o que exige revisão médica. Para cada marcador informe: valor, faixa normal, faixa ótima, status e impacto capilar. Responda em PT-BR, estruturado.`;
+renderHome();
 </script>
 </body>
 </html>
