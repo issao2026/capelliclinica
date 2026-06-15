@@ -26,15 +26,19 @@ header.top{display:flex;align-items:center;gap:16px;padding:20px 24px;background
 .btn.wa{background:#fff;border:1.5px solid #cfe3d6;color:#1f8f5f}.btn.wa:hover{background:#25d366;border-color:#25d366;color:#fff}
 .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
 .hidden{display:none!important}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:14px}
-.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);display:flex;align-items:center;gap:13px}
-.kpi .ico{font-size:20px;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#f2f0ea;flex:none}
-.kpi>div{min-width:0}
-.kpi b{display:block;font-size:34px;line-height:1}.kpi span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.2px;white-space:normal;line-height:1.15;display:block}
-.kpi.red{background:#fdf1ef;border-color:#f3d4ce}.kpi.red .ico{background:#f7d9d3}.kpi.red b{color:var(--red)}
-.kpi.amber{background:#fdf6e9;border-color:#f0e0bd}.kpi.amber .ico{background:#f6e6c2}.kpi.amber b{color:var(--amber)}
-.kpi.ok{background:#eef7f0;border-color:#cfe7d6}.kpi.ok .ico{background:#d6ecdc}.kpi.ok b{color:var(--ok)}
-.kpi.blue{background:#eef3fd;border-color:#cfdef9}.kpi.blue .ico{background:#d8e6fb}.kpi.blue b{color:var(--blue)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-top:14px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 12px 16px;box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;text-align:center;gap:11px;transition:.12s}
+.kpi[onclick]{cursor:pointer}.kpi[onclick]:hover{box-shadow:0 4px 14px rgba(20,20,18,.10);transform:translateY(-1px)}
+.kpi .ico{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#eef0f3;color:var(--blue)}
+.kpi .ico svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.kpi>div{display:flex;flex-direction:column;align-items:center;gap:9px;min-width:0}
+.kpi b{font-size:38px;line-height:.85;font-weight:800;padding-bottom:9px;border-bottom:3px solid #e2ddd0;color:var(--blue)}
+.kpi span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;line-height:1.2;white-space:normal}
+.kpi.red .ico{background:#fdecea;color:var(--red)}.kpi.red b{color:var(--red);border-color:var(--red)}
+.kpi.amber .ico{background:#fcf2dd;color:var(--amber)}.kpi.amber b{color:var(--amber);border-color:var(--amber)}
+.kpi.ok .ico{background:#e4f3e9;color:var(--ok)}.kpi.ok b{color:var(--ok);border-color:var(--ok)}
+.kpi.blue .ico{background:#e8f0fd;color:var(--blue)}.kpi.blue b{color:var(--blue);border-color:var(--blue)}
+.kpi.gauge b{border:none;padding:0;font-size:13px;font-weight:800;color:var(--ink)}
 .grid2{display:grid;grid-template-columns:1.3fr .7fr;gap:18px}
 @media(max-width:820px){.grid2{grid-template-columns:1fr}}
 table{width:100%;border-collapse:collapse;font-size:13.5px}
@@ -55,7 +59,7 @@ tr.clk{cursor:pointer}tr.clk:hover{background:#faf8f3}
 .dupmsg.warn{background:var(--amber-soft);border:1px solid #f0e0bd}
 .dupmsg.ok{background:var(--ok-soft);border:1px solid #cfe7d6}
 .patient{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
-.avatar{width:54px;height:54px;border-radius:50%;background:var(--green-soft);color:var(--ink);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:20px;font-family:Georgia,serif}
+.avatar{width:62px;height:62px;border-radius:50%;background:#e8f0fd;color:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;flex:none}
 .patient .meta b{font-size:16px}.patient .meta span{display:block;font-size:13px;color:var(--muted)}
 .mask{cursor:pointer;font-size:11px;color:var(--ink);border:1px solid var(--line);background:var(--green-soft);padding:4px 10px;border-radius:999px;font-weight:600;margin-left:auto}
 .pbar{position:relative;height:9px;border-radius:5px;background:#efece6}
@@ -175,12 +179,12 @@ tr.clk{cursor:pointer}tr.clk:hover{background:#faf8f3}
         </div>
       </div>
       <div class="kpis">
-        <div class="kpi" style="cursor:pointer" onclick="filtrarKpi('all')"><span class="ico">📋</span><div><b id="kTot">—</b><span>Biomarcadores</span></div></div>
-        <div class="kpi red" style="cursor:pointer" onclick="filtrarKpi('red')"><span class="ico">⚠️</span><div><b id="kDef">—</b><span>Déficits</span></div></div>
-        <div class="kpi amber" style="cursor:pointer" onclick="filtrarKpi('amber')"><span class="ico">❗</span><div><b id="kAt">—</b><span>Subótimos</span></div></div>
-        <div class="kpi ok" style="cursor:pointer" onclick="filtrarKpi('ok')"><span class="ico">✓</span><div><b id="kOk">—</b><span>Ótimos</span></div></div>
-        <div class="kpi" style="cursor:pointer" onclick="filtrarKpi('hair')"><span class="ico">🧴</span><div><b id="kImp">—</b><span>Impactam cabelo</span></div></div>
-        <div class="kpi"><div id="gauge" style="width:54px;height:54px;flex:none"></div><div><b style="font-size:14px;font-weight:700;line-height:1.2">Saúde geral</b><span>índice do paciente</span></div></div>
+        <div class="kpi blue" onclick="filtrarKpi('all')"><span class="ico"><svg viewBox="0 0 24 24"><path d="M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1z"/><path d="M8 6H6a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-2"/></svg></span><div><b id="kTot">—</b><span>Biomarcadores</span></div></div>
+        <div class="kpi red" onclick="filtrarKpi('red')"><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 4 3 20h18L12 4z"/><line x1="12" y1="10" x2="12" y2="14"/><circle cx="12" cy="17" r=".7" fill="currentColor" stroke="none"/></svg></span><div><b id="kDef">—</b><span>Déficits</span></div></div>
+        <div class="kpi amber" onclick="filtrarKpi('amber')"><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="7" x2="12" y2="13"/><circle cx="12" cy="16.5" r=".7" fill="currentColor" stroke="none"/></svg></span><div><b id="kAt">—</b><span>Subótimos</span></div></div>
+        <div class="kpi ok" onclick="filtrarKpi('ok')"><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9"/></svg></span><div><b id="kOk">—</b><span>Ótimos</span></div></div>
+        <div class="kpi blue" onclick="filtrarKpi('hair')"><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3c3 4 6 7 6 10a6 6 0 0 1-12 0c0-3 3-6 6-10z"/></svg></span><div><b id="kImp">—</b><span>Impactam cabelo</span></div></div>
+        <div class="kpi gauge"><div id="gauge"></div><div><b>Saúde geral</b><span>índice do paciente</span></div></div>
       </div>
       <div id="kpiDetail"></div>
       <div class="row">
@@ -409,7 +413,7 @@ function abrirPaciente(i){
   setNome();
   document.getElementById('pCtx').textContent=curPac.ctx;
   var kd=document.getElementById('kpiDetail');kd.innerHTML='';kd.dataset.cur='';
-  document.getElementById('pBio').innerHTML=`${curPac.sexo==='F'?'Feminino':'Masculino'} · ${curPac.idade} anos · ${curPac.peso} kg · 16 biomarcadores (faixas ajustadas ao sexo)`;
+  document.getElementById('pBio').innerHTML=`${curPac.sexo==='F'?'♀ Feminino':'♂ Masculino'} &nbsp;·&nbsp; 📅 ${curPac.idade} anos &nbsp;·&nbsp; ⚖️ ${curPac.peso} kg &nbsp;·&nbsp; 🧪 16 biomarcadores (faixas ajustadas ao sexo)`;
   let def=0,at=0,ok=0,imp=0;const tb=document.getElementById('tbody');tb.innerHTML="";
   DADOS.forEach(d=>{const c=classify(d);if(c.k==="red")def++;else if(c.k==="amber")at++;else ok++;if(d.hair&&c.k!=="ok")imp++;
     const ic=c.k==='ok'?'<span style="color:var(--ok)">✓</span>':c.k==='amber'?'<span style="color:var(--amber)">–</span>':(d.v<d.nl?'<span style="color:var(--red)">↓</span>':'<span style="color:var(--red)">↑</span>');const vc=c.k==='red'?'var(--red)':c.k==='amber'?'var(--amber)':'var(--ink)';
@@ -490,14 +494,19 @@ function clickHotspot(mk,i){
    <div style="margin-top:12px"><span style="cursor:pointer;color:var(--blue);font-size:12.5px" onclick="selMarcador('${mk}')">Ver curva de distribuição →</span></div>`;
 }
 function gaugeSvg(pct){const r=22,c=2*Math.PI*r,off=c*(1-Math.max(0,Math.min(100,pct))/100);const col=pct>=70?'#1f8f5f':pct>=45?'#e0a93b':'#d24b3e';return `<svg viewBox="0 0 54 54" width="54" height="54"><circle cx="27" cy="27" r="${r}" fill="none" stroke="#ece9e3" stroke-width="6"/><circle cx="27" cy="27" r="${r}" fill="none" stroke="${col}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 27 27)"/><text x="27" y="31" text-anchor="middle" font-size="14" font-weight="800" fill="${col}">${pct}%</text></svg>`;}
-function miniCurve(d){const W=92,base=24,amp=18;const ol=d.ol,oh=d.oh,nl=d.nl,nh=d.nh,mn=ol-(oh-ol)*1.6,mx=oh+(oh-ol)*1.6,span=(mx-mn)||1;const X=v=>Math.max(0,Math.min(W,(v-mn)/span*W));const cx=X((ol+oh)/2),sig=Math.max(8,(X(oh)-X(ol))/2.2);const z=(a,b,c)=>`<rect x="${a}" y="2" width="${Math.max(0,b-a)}" height="${base-2}" fill="${c}"/>`;const zones=z(0,X(nl),'#fae6e2')+z(X(nl),X(ol),'#fbf1dd')+z(X(ol),X(oh),'#e7eefb')+z(X(oh),X(nh),'#fbf1dd')+z(X(nh),W,'#fae6e2');let p='';for(let x=0;x<=W;x+=6){const y=base-amp*Math.exp(-((x-cx)*(x-cx))/(2*sig*sig));p+=(x?'L':'M')+x+' '+y.toFixed(1)+' ';}const bell=`<path d="${p}L${W} ${base} L0 ${base} Z" fill="rgba(120,116,108,.16)" stroke="#bdb9b0" stroke-width="1"/>`;const k=classify(d).k,col=k==='ok'?'#2f6fed':k==='amber'?'#e0a93b':'#d24b3e',px=X(d.v);const mk=`<line x1="${px}" y1="3" x2="${px}" y2="${base}" stroke="${col}" stroke-width="2"/><circle cx="${px}" cy="4" r="3" fill="${col}"/>`;return `<svg viewBox="0 0 ${W} ${base+5}" width="92" height="29" style="display:block">${zones}${bell}${mk}</svg>`;}
+function miniCurve(d){
+  function X(v){if(v<=d.nl)return Math.max(2,Math.min(25,(v/((d.nl)||1))*25));if(v<=d.ol)return 25+(v-d.nl)/((d.ol-d.nl)||1)*25;if(v<=d.oh)return 50+(v-d.ol)/((d.oh-d.ol)||1)*25;if(v<=d.nh)return 75+(v-d.oh)/((d.nh-d.oh)||1)*25;return 98;}
+  const px=Math.max(3,Math.min(97,X(d.v)));const k=classify(d).k,col=k==='ok'?'#2f6fed':k==='amber'?'#e0a93b':'#d24b3e';
+  return `<div style="position:relative;width:100px;height:16px"><div style="display:flex;height:8px;margin-top:4px;border-radius:4px;overflow:hidden"><div style="flex:1;background:#f3c5bf"></div><div style="flex:1;background:#f3e3b0"></div><div style="flex:1;background:#bcd2f7"></div><div style="flex:1;background:#f3e3b0"></div></div><div style="position:absolute;top:0;left:${px}%;transform:translateX(-50%);width:8px;height:16px;border-radius:4px;background:${col};border:1.5px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,.3)"></div></div>`;
+}
 function curveSvg(d){
   function X(v){if(v<=d.nl)return Math.max(1,Math.min(25,(v/((d.nl)||1))*25));if(v<=d.ol)return 25+(v-d.nl)/((d.ol-d.nl)||1)*25;if(v<=d.oh)return 50+(v-d.ol)/((d.oh-d.ol)||1)*25;if(v<=d.nh)return 75+(v-d.oh)/((d.nh-d.oh)||1)*25;return 99;}
-  const mx=Math.max(2,Math.min(98,X(d.v)));
-  const k=classify(d).k,col=k==='ok'?'#2f6fed':k==='amber'?'#e0a93b':'#d24b3e';
-  const seg=(bg,tc,t,br)=>`<div style="flex:1;background:${bg};display:flex;justify-content:center;align-items:flex-start;padding-top:16px;font-size:11.5px;font-weight:800;letter-spacing:.4px;color:${tc};text-align:center;${br?'border-right:2px dashed rgba(60,50,30,.28)':''}">${t}</div>`;
+  const px=Math.max(3,Math.min(97,X(d.v)));
+  const cols=[{t:'RUIM',c:'#c0392b',bg:'#fbeae8',on:'#f6d2cc'},{t:'REGULAR',c:'#b9770e',bg:'#fdf3e3',on:'#f6e3b8'},{t:'ÓTIMO',c:'#2f6fed',bg:'#eaf1fd',on:'#cfe0fb'},{t:'NORMAL',c:'#1f8f5f',bg:'#e9f5ee',on:'#cdecd9'}];
+  const act=Math.min(3,Math.floor(px/25)),mc=cols[act].c;
+  const colHtml=cols.map((c,i)=>`<div style="flex:1;background:${i===act?c.on:c.bg};display:flex;justify-content:center;align-items:flex-start;padding-top:12px;${i<3?'border-right:2px dashed rgba(60,50,30,.22)':''}"><span style="font-size:10.5px;font-weight:800;letter-spacing:.4px;color:${c.c};background:#fff;border:1.5px solid ${i===act?c.c:'var(--line)'};border-radius:9px;padding:3px 9px">${c.t}</span></div>`).join("");
   const tick=(x,v)=>`<span style="position:absolute;left:${x}%;transform:translateX(-50%)">${v}</span>`;
-  return `<div style="position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line)"><div style="display:flex;height:140px">${seg('#fbeae8','#c0392b','RUIM',1)}${seg('#fdf3e3','#b9770e','INTERMEDIÁRIO',1)}${seg('#eaf1fd','#2f6fed','ÓTIMO',1)}${seg('#fdf3e3','#1f8f5f','NORMAL',0)}</div><div style="position:absolute;top:6px;left:${mx}%;transform:translateX(-50%);font-weight:800;color:${col};font-size:14px">${d.v}</div><div style="position:absolute;top:30px;bottom:14px;left:${mx}%;transform:translateX(-50%);width:15px;border-radius:8px;background:${col};box-shadow:0 1px 4px rgba(0,0,0,.25)"></div></div><div style="position:relative;height:18px;margin-top:5px;font-size:11px;color:var(--muted)">${tick(25,d.nl)}${tick(50,d.ol)}${tick(75,d.oh)}${tick(100,d.nh)}</div>`;
+  return `<div style="position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line)"><div style="display:flex;height:150px">${colHtml}</div><div style="position:absolute;top:46px;left:${px}%;transform:translateX(-50%);font-weight:800;color:${mc};font-size:14px;white-space:nowrap">${d.v} ${d.u}</div><div style="position:absolute;top:68px;bottom:16px;left:${px}%;transform:translateX(-50%);width:14px;border-radius:7px;background:${mc};box-shadow:0 1px 5px rgba(0,0,0,.28)"></div></div><div style="position:relative;height:18px;margin-top:5px;font-size:11px;color:var(--muted)">${tick(25,d.nl)}${tick(50,d.ol)}${tick(75,d.oh)}${tick(100,d.nh)}</div>`;
 }
 function selMarcador(n,noScroll){const s=document.getElementById('curvaSel');if(s)s.value=n;renderCurva(n);if(!noScroll){var el=document.getElementById('curva');if(el)el.scrollIntoView({behavior:'smooth',block:'center'});}}
 function renderCurva(name){const d=DADOS.find(x=>x.n===name)||DADOS[0];if(!d)return;document.getElementById('curva').innerHTML=curveSvg(d);const c=classify(d),col=c.k==='ok'?'#2f6fed':c.k==='amber'?'#e0a93b':'#d24b3e';const w=c.k==='ok'?'Ideal':c.k==='amber'?'Atenção':(d.v<d.nl?'Abaixo do ideal':'Acima do ideal');document.getElementById('curvaCap').innerHTML=`<span style="color:${col}">${d.n}: ${d.v} ${d.u} — ${w}</span>`;}
