@@ -29,7 +29,8 @@ header.top{display:flex;align-items:center;gap:16px;padding:20px 24px;background
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:14px}
 .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);display:flex;align-items:center;gap:13px}
 .kpi .ico{font-size:20px;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#f2f0ea;flex:none}
-.kpi b{display:block;font-size:26px;line-height:1}.kpi span{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.kpi>div{min-width:0}
+.kpi b{display:block;font-size:34px;line-height:1}.kpi span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.2px;white-space:normal;line-height:1.15;display:block}
 .kpi.red{background:#fdf1ef;border-color:#f3d4ce}.kpi.red .ico{background:#f7d9d3}.kpi.red b{color:var(--red)}
 .kpi.amber{background:#fdf6e9;border-color:#f0e0bd}.kpi.amber .ico{background:#f6e6c2}.kpi.amber b{color:var(--amber)}
 .kpi.ok{background:#eef7f0;border-color:#cfe7d6}.kpi.ok .ico{background:#d6ecdc}.kpi.ok b{color:var(--ok)}
@@ -110,6 +111,12 @@ tr.clk{cursor:pointer}tr.clk:hover{background:#faf8f3}
     </div>
     <div class="tagpill">protótipo · uso interno</div>
   </header>
+
+  <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap">
+    <button class="btn ghost" onclick="showView('home')">📊 Painel</button>
+    <button class="btn ghost" onclick="showView('home');setTimeout(function(){var b=document.getElementById('busca');if(b)b.focus();},60)">👥 Clientes</button>
+    <button class="btn ghost" onclick="showView('params')">⚙️ Parâmetros de referência</button>
+  </div>
 
   <!-- ===================== HOME ===================== -->
   <div id="home">
@@ -262,6 +269,15 @@ tr.clk{cursor:pointer}tr.clk:hover{background:#faf8f3}
 
     <p class="disclaimer">Sistema de <b>uso interno</b>. Dados deste protótipo são fictícios. Em produção, login do paciente, evolução clínica, comparação de imagens e histórico de exames (Supabase) — identificação mascarável (LGPD por design).</p>
   </div>
+
+  <div id="params" class="hidden">
+    <div class="backlink" onclick="showView('home')">← Voltar ao painel</div>
+    <section class="card">
+      <h2>Parâmetros de referência · faixas por marcador</h2>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 6px">Faixas que o agente usa para classificar cada exame. Em produção, configuráveis pelo médico — faixa <b>normal</b> e faixa <b>ótima</b>, com ajuste por sexo.</p>
+      <table style="margin-top:10px"><thead><tr><th>Marcador</th><th>Unidade</th><th>Normal (M)</th><th>Ótima (M)</th><th>Ajuste ♀ (normal / ótima)</th></tr></thead><tbody id="paramBody"></tbody></table>
+    </section>
+  </div>
 </div>
 
 <script>
@@ -324,9 +340,15 @@ function fmtBRL(v){return 'R$ '+v.toLocaleString('pt-BR');}
 
 /* ---------- VIEWS ---------- */
 function showView(v){
-  document.getElementById('home').classList.toggle('hidden',v!=='home');
-  document.getElementById('analise').classList.toggle('hidden',v!=='analise');
+  ['home','analise','params'].forEach(id=>{var el=document.getElementById(id);if(el)el.classList.toggle('hidden',id!==v);});
+  if(v==='params')renderParams();
   window.scrollTo({top:0,behavior:'smooth'});
+}
+function renderParams(){
+  document.getElementById('paramBody').innerHTML=REF.map(r=>{
+    const f=r.f?`${r.f[0]}–${r.f[1]} / ${r.f[2]}–${r.f[3]}`:'<span style="color:var(--muted)">igual ao M</span>';
+    return `<tr><td><b>${r.n}</b></td><td>${r.u}</td><td>${r.m[0]}–${r.m[1]}</td><td>${r.m[2]}–${r.m[3]}</td><td>${f}</td></tr>`;
+  }).join("");
 }
 
 /* ---------- HOME ---------- */
@@ -473,9 +495,9 @@ function curveSvg(d){
   function X(v){if(v<=d.nl)return Math.max(1,Math.min(25,(v/((d.nl)||1))*25));if(v<=d.ol)return 25+(v-d.nl)/((d.ol-d.nl)||1)*25;if(v<=d.oh)return 50+(v-d.ol)/((d.oh-d.ol)||1)*25;if(v<=d.nh)return 75+(v-d.oh)/((d.nh-d.oh)||1)*25;return 99;}
   const mx=Math.max(2,Math.min(98,X(d.v)));
   const k=classify(d).k,col=k==='ok'?'#2f6fed':k==='amber'?'#e0a93b':'#d24b3e';
-  const seg=(bg,tc,t)=>`<div style="flex:1;background:${bg};display:flex;justify-content:center;align-items:flex-start;padding-top:16px;font-size:11.5px;font-weight:800;letter-spacing:.4px;color:${tc};text-align:center">${t}</div>`;
+  const seg=(bg,tc,t,br)=>`<div style="flex:1;background:${bg};display:flex;justify-content:center;align-items:flex-start;padding-top:16px;font-size:11.5px;font-weight:800;letter-spacing:.4px;color:${tc};text-align:center;${br?'border-right:2px dashed rgba(60,50,30,.28)':''}">${t}</div>`;
   const tick=(x,v)=>`<span style="position:absolute;left:${x}%;transform:translateX(-50%)">${v}</span>`;
-  return `<div style="position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line)"><div style="display:flex;height:140px">${seg('#fbeae8','#c0392b','BAIXO')}${seg('#fdf3e3','#b9770e','NORMAL / ATENÇÃO')}${seg('#eaf1fd','#2f6fed','ÓTIMO')}${seg('#fdf3e3','#b9770e','NORMAL / ATENÇÃO')}</div><div style="position:absolute;top:6px;left:${mx}%;transform:translateX(-50%);font-weight:800;color:${col};font-size:14px">${d.v}</div><div style="position:absolute;top:30px;bottom:14px;left:${mx}%;transform:translateX(-50%);width:15px;border-radius:8px;background:${col};box-shadow:0 1px 4px rgba(0,0,0,.25)"></div></div><div style="position:relative;height:18px;margin-top:5px;font-size:11px;color:var(--muted)">${tick(25,d.nl)}${tick(50,d.ol)}${tick(75,d.oh)}${tick(100,d.nh)}</div>`;
+  return `<div style="position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line)"><div style="display:flex;height:140px">${seg('#fbeae8','#c0392b','RUIM',1)}${seg('#fdf3e3','#b9770e','INTERMEDIÁRIO',1)}${seg('#eaf1fd','#2f6fed','ÓTIMO',1)}${seg('#fdf3e3','#1f8f5f','NORMAL',0)}</div><div style="position:absolute;top:6px;left:${mx}%;transform:translateX(-50%);font-weight:800;color:${col};font-size:14px">${d.v}</div><div style="position:absolute;top:30px;bottom:14px;left:${mx}%;transform:translateX(-50%);width:15px;border-radius:8px;background:${col};box-shadow:0 1px 4px rgba(0,0,0,.25)"></div></div><div style="position:relative;height:18px;margin-top:5px;font-size:11px;color:var(--muted)">${tick(25,d.nl)}${tick(50,d.ol)}${tick(75,d.oh)}${tick(100,d.nh)}</div>`;
 }
 function selMarcador(n,noScroll){const s=document.getElementById('curvaSel');if(s)s.value=n;renderCurva(n);if(!noScroll){var el=document.getElementById('curva');if(el)el.scrollIntoView({behavior:'smooth',block:'center'});}}
 function renderCurva(name){const d=DADOS.find(x=>x.n===name)||DADOS[0];if(!d)return;document.getElementById('curva').innerHTML=curveSvg(d);const c=classify(d),col=c.k==='ok'?'#2f6fed':c.k==='amber'?'#e0a93b':'#d24b3e';const w=c.k==='ok'?'Ideal':c.k==='amber'?'Atenção':(d.v<d.nl?'Abaixo do ideal':'Acima do ideal');document.getElementById('curvaCap').innerHTML=`<span style="color:${col}">${d.n}: ${d.v} ${d.u} — ${w}</span>`;}
