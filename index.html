@@ -162,13 +162,14 @@ tr.clk{cursor:pointer}tr.clk:hover{background:#faf8f3}
         </div>
       </div>
       <div class="kpis">
-        <div class="kpi"><span class="ico">📋</span><div><b id="kTot">—</b><span>Biomarcadores</span></div></div>
-        <div class="kpi red"><span class="ico">⚠️</span><div><b id="kDef">—</b><span>Déficits</span></div></div>
-        <div class="kpi amber"><span class="ico">❗</span><div><b id="kAt">—</b><span>Subótimos</span></div></div>
-        <div class="kpi ok"><span class="ico">✓</span><div><b id="kOk">—</b><span>Ótimos</span></div></div>
-        <div class="kpi"><span class="ico">🧴</span><div><b id="kImp">—</b><span>Impactam cabelo</span></div></div>
+        <div class="kpi" style="cursor:pointer" onclick="filtrarKpi('all')"><span class="ico">📋</span><div><b id="kTot">—</b><span>Biomarcadores</span></div></div>
+        <div class="kpi red" style="cursor:pointer" onclick="filtrarKpi('red')"><span class="ico">⚠️</span><div><b id="kDef">—</b><span>Déficits</span></div></div>
+        <div class="kpi amber" style="cursor:pointer" onclick="filtrarKpi('amber')"><span class="ico">❗</span><div><b id="kAt">—</b><span>Subótimos</span></div></div>
+        <div class="kpi ok" style="cursor:pointer" onclick="filtrarKpi('ok')"><span class="ico">✓</span><div><b id="kOk">—</b><span>Ótimos</span></div></div>
+        <div class="kpi" style="cursor:pointer" onclick="filtrarKpi('hair')"><span class="ico">🧴</span><div><b id="kImp">—</b><span>Impactam cabelo</span></div></div>
         <div class="kpi"><div id="gauge" style="width:54px;height:54px;flex:none"></div><div><b style="font-size:14px;font-weight:700;line-height:1.2">Saúde geral</b><span>índice do paciente</span></div></div>
       </div>
+      <div id="kpiDetail"></div>
       <div class="row">
         <button class="btn live" onclick="analisarAoVivo()">✦ Analisar ao vivo com Claude</button>
         <button class="btn wa" onclick="enviarWhats()">📲 Enviar ao paciente (WhatsApp)</button>
@@ -376,6 +377,7 @@ function abrirPaciente(i){
   showView('analise');
   setNome();
   document.getElementById('pCtx').textContent=curPac.ctx;
+  var kd=document.getElementById('kpiDetail');kd.innerHTML='';kd.dataset.cur='';
   document.getElementById('pBio').innerHTML=`${curPac.sexo==='F'?'Feminino':'Masculino'} · ${curPac.idade} anos · ${curPac.peso} kg · 16 biomarcadores (faixas ajustadas ao sexo)`;
   let def=0,at=0,ok=0,imp=0;const tb=document.getElementById('tbody');tb.innerHTML="";
   DADOS.forEach(d=>{const c=classify(d);if(c.k==="red")def++;else if(c.k==="amber")at++;else ok++;if(d.hair&&c.k!=="ok")imp++;
@@ -399,6 +401,22 @@ function montaNarrativa(){
   const TXT={"Ferritina":"reserva de ferro baixa é gatilho de <b>eflúvio telógeno</b>.","Vitamina D (25-OH)":"deficiência associada a <b>miniaturização</b> e pior resposta ao tratamento.","Zinco":"cofator da queratina; déficit fragiliza o fio.","TSH":"tireoide fora do ótimo mantém a queda mesmo com nutrientes corrigidos.","Testosterona livre":"baixa vitalidade e energia; acompanhar eixo.","Sat. transferrina":"transporte de ferro baixo, reforça o quadro de eflúvio.","Hemoglobina":"anemia compromete oxigenação do folículo.","Vitamina B12":"déficit afeta a renovação celular do bulbo.","Ferro sérico":"ferro circulante baixo, repor com acompanhamento."};
   IMPACTOS=probs.slice(0,5).map(d=>[`${d.n} ${d.v}${d.u} (ót. ${d.ol}–${d.oh})`, TXT[d.n]||"fora da faixa ótima; relevante para o quadro capilar."]);
   PROTO=["Repor os déficits prioritários (ferro/ferritina, vitamina D, zinco) via oral ou soroterapia.","Corrigir tireoide antes de atribuir a queda só a nutrientes.","Soroterapia capilar combinando os principais cofatores.","Reavaliar em 60–90 dias com novo exame e tricoscopia."];
+}
+function filtrarKpi(tipo){
+  const el=document.getElementById('kpiDetail');
+  if(el.dataset.cur===tipo){el.innerHTML='';el.dataset.cur='';return;}
+  el.dataset.cur=tipo;
+  let arr;
+  if(tipo==='hair')arr=DADOS.filter(d=>d.hair&&classify(d).k!=='ok');
+  else if(tipo==='all')arr=DADOS.slice();
+  else arr=DADOS.filter(d=>classify(d).k===tipo);
+  arr.sort((a,b)=>pctOtimo(a)-pctOtimo(b));
+  const lbl={red:'Déficits',amber:'Subótimos',ok:'Em faixa ótima',hair:'Impactam o cabelo',all:'Todos os biomarcadores'}[tipo];
+  if(!arr.length){el.innerHTML=`<div class="card" style="margin-top:14px;color:var(--muted)">Nenhum marcador em "${lbl}".</div>`;el.scrollIntoView({behavior:'smooth',block:'nearest'});return;}
+  el.innerHTML=`<div class="card" style="margin-top:14px"><h2>${lbl} · ${arr.length}</h2>`+
+   arr.map(d=>{const c=classify(d);return `<div class="orgline" style="cursor:pointer" onclick="selMarcador('${d.n}')"><span class="nm">${d.n}</span><span class="pv">${d.v}<small style="color:var(--muted);font-weight:500"> ${d.u}</small></span><span style="flex:1;max-width:160px">${scaleHtml(d)}</span><span style="font-size:11px;color:var(--muted)">ót. ${d.ol}–${d.oh}</span><span class="chip ${c.k}">${c.t}</span></div>`;}).join("")+
+   `<div style="font-size:12px;color:var(--muted);margin-top:10px">Clique num exame para ver a curva de distribuição.</div></div>`;
+  el.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 function renderPrioridades(){
   const probs=DADOS.filter(d=>classify(d).k!=='ok').sort((a,b)=>pctOtimo(a)-pctOtimo(b)).slice(0,6);
